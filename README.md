@@ -2,8 +2,8 @@
 
 ##Python Web-Client
 
-Dependencies (pip):  
+**Dependencies (pip):**  
   -flask  
-To run:  
+**To run:**  
   -python main.py  
   -open webpage to localhost:5000  
