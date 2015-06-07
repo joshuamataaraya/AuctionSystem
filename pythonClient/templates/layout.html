@@ -17,7 +17,6 @@
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='css/basestyle.css') }}" rel="stylesheet">
 
-
   </head>
 
   <body>
@@ -31,25 +30,24 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Autction System</a>
+          <a class="navbar-brand" href="/">Auction System</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            {% block topLinks %}
+            {% endblock %}
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
     </nav>
 
     <div class="container">
-
       <div class="starter-template">
+        {% block content %}
         <h1>Bootstrap starter template</h1>
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        {% endblock %}
       </div>
-
     </div><!-- /.container -->
 
 
@@ -58,5 +56,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}"></script>
   </body>
 </html>

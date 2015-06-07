@@ -1,0 +1,52 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" role="form">
+
+  <h2>List a new Item</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="usr">Listing Name</label>
+    <input type="text" class="form-control" name="listingName">
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Category I</label>
+    <select class="form-control" name="category1">
+      <option>----</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Category II</label>
+    <select class="form-control" name="category2">
+      <option>----</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Description</label>
+    <textarea type="textArea" class="form-control" rows="7" name="description"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Listing End Date</label>
+    <input type="date" class="form-control" name="listingEndDate">
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Starting Price</label>
+    <input type="number" class="form-control" name="startingPrice">
+  </div>
+
+  <br>
+  <label for="comment">Image (optional)</label>
+  <span class="btn btn-warning btn-file">
+    Browse
+    <input type="file" accept="image/*" name="img">
+  </span>
+  <br>
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Add Listing</button>
+
+</form>
+{% endblock %}

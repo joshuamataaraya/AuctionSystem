@@ -5,8 +5,13 @@ from sql import SQLConnection
 app = Flask(__name__)
 
 @app.route("/")
-def hello():
-    return render_template('userSelect.html')
+@app.route("/login")
+def login():
+    return render_template('login.html')
+
+@app.route("/newListing")
+def newListing():
+    return render_template('newListing.html')
 
 if __name__ == "__main__":
     sqlCon = SQLConnection("autionDB", 'user', "123")
