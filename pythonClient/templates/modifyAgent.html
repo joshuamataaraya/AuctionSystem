@@ -1,0 +1,38 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" role="form" autocomplete="off">
+
+  <h2>Modify an Agent</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="comment"> Select an Agent</label>
+    <select class="form-control" name="agentSelect">
+      <option>----</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Agent First Name</label>
+    <input type="text" class="form-control" name="agentFirstName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Agent Last Name</label>
+    <input type="text" class="form-control" name="agentLastName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Agent Alias</label>
+    <input type="text" class="form-control" autocomplete="off" name="agentAlias">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Agent Password</label>
+    <input type="password" class="form-control" autocomplete="off" name="agentPassword">
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Modify Agent</button>
+
+</form>
+{% endblock %}

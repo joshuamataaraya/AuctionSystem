@@ -1,0 +1,18 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" role="form" autocomplete="off">
+
+  <h2>Reactivate an Agent</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="comment"> Select an Agent</label>
+    <select class="form-control" name="agentSelect">
+      <option>----</option>
+    </select>
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Reactivate Agent</button>
+
+</form>
+{% endblock %}

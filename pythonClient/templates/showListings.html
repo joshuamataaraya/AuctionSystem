@@ -1,0 +1,25 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" role="form" autocomplete="off">
+
+  <h2>Show Listings</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="comment"> Select Category I.</label>
+    <select class="form-control" name="category1">
+      <option>----</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="comment"> Select Category II.</label>
+    <select class="form-control" name="category2">
+      <option>----</option>
+    </select>
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Show Listings</button>
+
+</form>
+{% endblock %}
