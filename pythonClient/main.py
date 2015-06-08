@@ -7,12 +7,16 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/login")
 def login():
+    cursor.callproc('uspAllowAgent', ('zeth',))
+
+    for row in cursor:
+        print("return = %r" % (row,))
+
     return render_template('login.html')
 
 @app.route("/newListing")
 def newListing():
     return render_template('newListing.html')
-
 
 #Agent stuff
 @app.route("/newAgent")
@@ -39,6 +43,7 @@ def showListings():
 
 if __name__ == "__main__":
     sqlCon = SQLConnection("autionDB", 'user', "123")
-    #con = sqlCon.connect()
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
     app.debug = True    #auto refresh
     app.run()
