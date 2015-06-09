@@ -18,9 +18,6 @@ Dependencies
 To run  
   `python main.py`
 
-##LICENSE##
-MIT: http://rem.mit-license.org   
-
 ----
 DB I. Project  
 @Instituto Tecnológico de Costa Rica
