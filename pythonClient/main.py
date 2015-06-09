@@ -52,23 +52,28 @@ def userPage():
     return render_template('userPage.html')
 
 @app.route("/newListing")
+@login_required
 def newListing():
     return render_template('newListing.html')
 
 #Admin stuff
 @app.route("/newAgent")
+@login_required
 def newAgent():
     return render_template('newAgent.html')
 
 @app.route("/modifyAgent")
+@login_required
 def modifyAgent():
     return render_template('modifyAgent.html')
 
 @app.route("/reactivateAgent")
+@login_required
 def reactivateAgent():
     return render_template('reactivateAgent.html')
 
 @app.route("/suspendAgent")
+@login_required
 def suspendAgent():
     return render_template('suspendAgent.html')
 
@@ -76,6 +81,7 @@ def suspendAgent():
 
 #Listing stuff
 @app.route("/showListings")
+@login_required
 def showListings():
     return render_template('showListings.html')
 
