@@ -1,7 +1,7 @@
 from flask import (Flask, render_template, request,
                     flash, redirect, url_for)
 from flask_login import (LoginManager, login_user,
-                        logout_user, login_required, current_user )
+                        logout_user, login_required )
 from sql import SQLConnection
 from user import User
 
@@ -30,6 +30,7 @@ def login():
             #show login msg
             flash('You are now logged in!')
 
+            return redirect(request.args.get('next') or url_for('index'))
 
 
     #cursor.callproc('uspAllowAgent', ('zeth',))
@@ -45,11 +46,16 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route("/userPage")
+@login_required
+def userPage():
+    return render_template('userPage.html')
+
 @app.route("/newListing")
 def newListing():
     return render_template('newListing.html')
 
-#Agent stuff
+#Admin stuff
 @app.route("/newAgent")
 def newAgent():
     return render_template('newAgent.html')
@@ -65,6 +71,8 @@ def reactivateAgent():
 @app.route("/suspendAgent")
 def suspendAgent():
     return render_template('suspendAgent.html')
+
+#Agent stuff
 
 #Listing stuff
 @app.route("/showListings")

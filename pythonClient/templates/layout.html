@@ -32,11 +32,29 @@
           <a class="navbar-brand" href="/">Auction System</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            {% block topLinks %}
-            {% endblock %}
-          </ul>
           {% if current_user.is_authenticated() %}
+          <ul class="nav navbar-nav">
+            <li><a href="{{url_for('userPage')}}">
+              {{current_user.userid}} ({{current_user.userType}})
+            </a></li>
+            <li><a href="{{ url_for('newListing') }}">New Listing</a></li>
+
+            {% if current_user.userType == "admin" %}
+              <li><a href="{{ url_for('newAgent') }}">New Agent</a></li>
+              <li><a href="{{ url_for('modifyAgent') }}">Modify Agent</a></li>
+              <li><a href="{{ url_for('reactivateAgent') }}">Reactivate Agent</a></li>
+              <li><a href="{{ url_for('suspendAgent') }}">Suspend Agent</a></li>
+            {% endif %}
+
+            {% if current_user.userType == "agent" %}
+              <li><a href="{{ url_for('newAgent') }}">New Participant</a></li>
+              <li><a href="{{ url_for('modifyAgent') }}">Modify Participant</a></li>
+              <li><a href="{{ url_for('reactivateAgent') }}">Reactivate Participant</a></li>
+              <li><a href="{{ url_for('suspendAgent') }}">Suspend Participant</a></li>
+            {% endif %}
+
+          </ul>
+
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           </ul>
