@@ -9,7 +9,5 @@ class SQLConnection:
         self.password = password
 
     def connect(self):
-        conn = pymssql.connect(self.server,
-        self.user,self.password,
-        'AuctionSystem')
-        return conn
+        return pymssql.connect(self.server,
+            self.user,self.password,'AuctionSystem')

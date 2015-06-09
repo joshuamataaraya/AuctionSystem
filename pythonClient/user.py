@@ -9,13 +9,10 @@ class User:
         #set type of user we are
         self.userType = self.setUserType()
 
-    def get(self, userid):
-        return User(userid)
-
     def setUserType(self):
         return "admin" #placeholder need return dynamic type
 
-    #FLASK needs this for login management vv
+    #FLASK needs this for login management v
     def isValid(self):
         return True #this needs to validate with server
 

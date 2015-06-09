@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, flash
-from flask_login import LoginManager, login_user
+from flask import (Flask, render_template, request,
+                    flash, redirect, url_for)
+from flask_login import (LoginManager, login_user,
+                        logout_user, login_required, current_user )
 from sql import SQLConnection
 from user import User
 
@@ -10,6 +12,11 @@ app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
 loginManager = LoginManager()
 
 @app.route("/")
+@login_required
+def index():
+    return render_template('index.html')
+
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     #if someone tried to login
@@ -25,12 +32,18 @@ def login():
 
 
 
-    cursor.callproc('uspAllowAgent', ('zeth',))
+    #cursor.callproc('uspAllowAgent', ('zeth',))
 
-    for row in cursor:
-        print("return = %r" % (row,))
+    #for row in cursor:
+    #    print("return = %r" % (row,))
 
     return render_template('login.html')
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route("/newListing")
 def newListing():
@@ -62,13 +75,18 @@ def showListings():
 #get user's id
 @loginManager.user_loader
 def load_user(userid):
-    return User.get(userid)
+    return User(userid)
 
+@loginManager.unauthorized_handler
+def unauthorized():
+    flash("You are not logged in!")
+    # do stuff
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     sqlCon = SQLConnection("autionDB", 'user', "123")
-    con = sqlCon.connect()
-    cursor = con.cursor(as_dict=True)
+    #con = sqlCon.connect()
+    #cursor = con.cursor(as_dict=True)
 
     loginManager.init_app(app)
 
