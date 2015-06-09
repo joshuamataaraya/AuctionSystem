@@ -7,7 +7,7 @@ Features
   * Dynamic web page adaption to user type
   * Only procedure calls with sql
   * Password encryption
-  * SQL use of roles, triggers, calendar, user retrictions, etc
+  * SQL use of roles, triggers, calendar, user restrictions, etc
 
 Dependencies    
   * flask  
