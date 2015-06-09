@@ -1,12 +1,19 @@
-# Auction System
+# Small Auction System
 
-##Python Web-Client
+##Python Web-Client with Microsoft SQL ties using pymssql
 
 **Dependencies:**  
-  -pip flask  
-  -pip flask-login  
-  -pip pymssql  
-  -install freetds (need to configure freetds.conf)  
+  -flask  
+  -flask-login  
+  -pymssql  
+  -configure freetds.conf to point to Microosft SQL DB  
 **To run:**  
   -python main.py  
-  -open webpage to localhost:5000  
+
+LICENSE
+==== 
+MIT: http://rem.mit-license.org   
+
+----
+DB I. Project  
+@Instituto Tecnológico de Costa Rica
