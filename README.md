@@ -1,6 +1,6 @@
 # Small Auction System
 
-##Python Web-Client with Microsoft SQL ties using pymssql
+**Python Web-Client with Microsoft SQL ties using pymssql**
 
 **Dependencies:**  
   -flask  
