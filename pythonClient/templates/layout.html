@@ -20,7 +20,6 @@
   </head>
 
   <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -43,6 +42,17 @@
 
     <div class="container">
       <div class="starter-template">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+          {% for message in messages %}
+            <h4 class="alert alert-info">{{ message }}</h4>
+          {% endfor %}
+
+        {% endif %}
+      {% endwith %}
+
+
         {% block content %}
         <h1>Bootstrap starter template</h1>
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>

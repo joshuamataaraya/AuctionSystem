@@ -4,6 +4,7 @@
 
 **Dependencies:**  
   -pip flask  
+  -pip flask-login  
   -pip pymssql  
   -install freetds (need to configure freetds.conf)  
 **To run:**  

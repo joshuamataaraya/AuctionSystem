@@ -1,12 +1,30 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template, request, flash
+from flask_login import LoginManager, login_user
 from sql import SQLConnection
+from user import User
 
 app = Flask(__name__)
+app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
+
+#login manager
+loginManager = LoginManager()
 
 @app.route("/")
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    #if someone tried to login
+    if request.method == 'POST':
+        alias = request.form['alias'].encode("UTF-8")
+        #password = request.form['password'].encode("UTF-8")
+
+        user = User(alias)
+        if user is not None:    #if valid user
+            login_user(user)
+            #show login msg
+            flash('You are now logged in!')
+
+
+
     cursor.callproc('uspAllowAgent', ('zeth',))
 
     for row in cursor:
@@ -41,9 +59,18 @@ def showListings():
     return render_template('showListings.html')
 
 
+#get user's id
+@loginManager.user_loader
+def load_user(userid):
+    return User.get(userid)
+
+
 if __name__ == "__main__":
     sqlCon = SQLConnection("autionDB", 'user', "123")
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
+
+    loginManager.init_app(app)
+
     app.debug = True    #auto refresh
     app.run()
