@@ -8,7 +8,7 @@
   -pymssql  
   -configure freetds.conf to point to Microosft SQL DB  
 **To run:**  
-  -python main.py  
+  `python main.py`
 
 LICENSE
 ==== 
