@@ -10,8 +10,7 @@
 **To run:**  
   `python main.py`
 
-LICENSE
-==== 
+##LICENSE##
 MIT: http://rem.mit-license.org   
 
 ----
