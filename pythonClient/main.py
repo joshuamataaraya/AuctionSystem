@@ -11,9 +11,18 @@ app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
 #login manager
 loginManager = LoginManager()
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 @login_required
 def index():
+    if request.method == 'POST':
+        category1 = "hola"
+        category2 = "hola"
+
+        cursor.callproc('uspViewAvailableAuctions', (category1, category2,))
+
+        return render_template('index.html', entries=cursor)
+
+
     return render_template('index.html')
 
 
@@ -99,8 +108,8 @@ def unauthorized():
 
 if __name__ == "__main__":
     sqlCon = SQLConnection("autionDB", 'user', "123")
-    #con = sqlCon.connect()
-    #cursor = con.cursor(as_dict=True)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
 
     loginManager.init_app(app)
 
