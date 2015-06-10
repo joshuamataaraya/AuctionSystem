@@ -10,7 +10,9 @@
     <label for="comment"> Select Category I.</label>
     <select class="form-control" name="category1">
       <option>----</option>
-
+      {% for category in cate1 %}
+        <option>{{ category }}</option>
+      {% endfor %}
     </select>
   </div>
 
@@ -18,15 +20,39 @@
     <label for="comment"> Select Category II.</label>
     <select class="form-control" name="category2">
       <option>----</option>
+      {% for category in cate2 %}
+        <option>{{ category }}</option>
+      {% endfor %}
     </select>
   </div>
 
   <br>
   <button class="btn btn-lg btn-primary" type="submit">Show Listings</button>
 
-  {% for row in entries %}
-    <h1>hola</h1>
-  {% endfor %}
+  <br><br>
+  <div class="container">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Seller</th>
+        <th>Ends</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in entries %}
+        <tr>
+          <td>{{ (item['Descripcion']) }}</td>
+          <td>{{ item['AliasVendedor'] }}</td>
+          <td>{{ item['LimiteCierre'] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
 
 </form>
 {% endblock %}

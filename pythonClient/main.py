@@ -1,7 +1,7 @@
 from flask import (Flask, render_template, request,
                     flash, redirect, url_for)
 from flask_login import (LoginManager, login_user,
-                        logout_user, login_required )
+                        logout_user, login_required, current_user )
 from sql import SQLConnection
 from user import User
 
@@ -14,16 +14,33 @@ loginManager = LoginManager()
 @app.route("/", methods=['GET', 'POST'])
 @login_required
 def index():
+
+    cursor.callproc('uspViewCategories')
+
+    cate1 = []
+    cate2 = []
+
+    for row in cursor:
+        if (row['category']) not in cate1:
+            cate1.append(row['category'])
+        if (row['subCategory']) not in cate2:
+            cate2.append(row['subCategory'])
+
+    cate1.sort()
+    cate2.sort()
+
     if request.method == 'POST':
-        category1 = "hola"
-        category2 = "hola"
+        category1 = request.form['category1']
+        category2 = request.form['category2']
 
-        cursor.callproc('uspViewAvailableAuctions', (category1, category2,))
+        cursor.callproc('uspViewAvailableAuctions', (current_user.userid,
+                category1, category2,))
 
-        return render_template('index.html', entries=cursor)
+        return render_template('index.html',
+            entries=cursor, cate1=cate1, cate2=cate2)
 
 
-    return render_template('index.html')
+    return render_template('index.html', cate1 = cate1, cate2 = cate2)
 
 
 @app.route("/login", methods=['GET', 'POST'])
