@@ -2,8 +2,10 @@ from flask import (Flask, render_template, request,
                     flash, redirect, url_for)
 from flask_login import (LoginManager, login_user,
                         logout_user, login_required, current_user )
-from sql import SQLConnection
+
 from user import User
+from sql import SQLConnection
+from db import getUserType
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -15,6 +17,10 @@ loginManager = LoginManager()
 @login_required
 def index():
 
+    sqlCon = SQLConnection(current_user.userType)
+    con = sqlCon.connect()
+
+    cursor = con.cursor(as_dict=True)
     cursor.callproc('uspViewCategories')
 
     cate1 = []
@@ -26,16 +32,27 @@ def index():
         if (row['subCategory']) not in cate2:
             cate2.append(row['subCategory'])
 
+    #close connection
+    sqlCon.close(con)
+
     cate1.sort()
     cate2.sort()
 
     if request.method == 'POST':
         category1 = request.form['category1']
         category2 = request.form['category2']
+        if category1 == "----":
+            category1 = None
+        if category2 == "----":
+            category2 = None
 
+        sqlCon = SQLConnection(current_user.userType)
+        con = sqlCon.connect()
+        cursor = con.cursor(as_dict=True)
+        #get all listings
         cursor.callproc('uspViewAvailableAuctions', (current_user.userid,
-                category1, category2,))
-
+                    category1, category2,))
+        #sqlCon.close(con)
         return render_template('index.html',
             entries=cursor, cate1=cate1, cate2=cate2)
 
@@ -48,21 +65,17 @@ def login():
     #if someone tried to login
     if request.method == 'POST':
         alias = request.form['alias'].encode("UTF-8")
-        #password = request.form['password'].encode("UTF-8")
+        password = request.form['password'].encode("UTF-8")
 
-        user = User(alias)
-        if user is not None:    #if valid user
-            login_user(user)
+        user = User(alias, 'Participant')
+
+        if getUserType(alias, password) is True:    #if valid user
+            login_user(user) #login the user
             #show login msg
             flash('You are now logged in!')
-
             return redirect(request.args.get('next') or url_for('index'))
-
-
-    #cursor.callproc('uspAllowAgent', ('zeth',))
-
-    #for row in cursor:
-    #    print("return = %r" % (row,))
+        else:
+            flash("Wrong Login!")
 
     return render_template('login.html')
 
@@ -105,17 +118,17 @@ def suspendAgent():
 
 #Agent stuff
 
+
 #Listing stuff
 @app.route("/showListings")
 @login_required
 def showListings():
     return render_template('showListings.html')
 
-
 #get user's id
 @loginManager.user_loader
 def load_user(userid):
-    return User(userid)
+    return User(userid, 'Participant')
 
 @loginManager.unauthorized_handler
 def unauthorized():
@@ -124,10 +137,6 @@ def unauthorized():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    sqlCon = SQLConnection("autionDB", 'user', "123")
-    con = sqlCon.connect()
-    cursor = con.cursor(as_dict=True)
-
     loginManager.init_app(app)
 
     app.debug = True    #auto refresh
