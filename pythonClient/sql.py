@@ -12,7 +12,7 @@ class SQLConnection:
         elif userType == "agent":
             self.user = "App"
             self.password = "app"
-        elif userType == "Participant":
+        elif userType == "participant":
             self.user = "user"
             self.password = "123"
         else:

@@ -1,11 +1,12 @@
 from flask import (Flask, render_template, request,
                     flash, redirect, url_for)
 from flask_login import (LoginManager, login_user,
-                        logout_user, login_required, current_user )
+                        logout_user, login_required, current_user)
 
 from user import User
 from sql import SQLConnection
-from db import getUserType
+from db import (getUserType, getListingsByUser,
+    getWinningListingsByUser)
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -67,9 +68,9 @@ def login():
         alias = request.form['alias'].encode("UTF-8")
         password = request.form['password'].encode("UTF-8")
 
-        user = User(alias, 'Participant')
+        user = User(alias, 'participant')
 
-        if getUserType(alias, password) is True:    #if valid user
+        if True:    #if valid user
             login_user(user) #login the user
             #show login msg
             flash('You are now logged in!')
@@ -85,10 +86,36 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route("/userPage")
+@app.route("/userPage", methods=['GET', 'POST'])
 @login_required
 def userPage():
-    return render_template('userPage.html')
+    sqlCon = SQLConnection(current_user.userType)
+    con = sqlCon.connect()
+
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspGetParticipants')
+
+    users = []
+    for row in cursor:
+        users.append(row['Alias'])
+    #close connection
+    sqlCon.close(con)
+
+    if request.method == 'POST':
+        user = request.form['user']
+        userBids = request.form['userBids']
+
+        listings= getListingsByUser(user,
+        current_user.userid, current_user.userType)
+
+        winningListings= getWinningListingsByUser(user,
+        current_user.userid, current_user.userType)
+
+        return render_template('index.html',
+            user=users, listings=listings, winningListings=winningListings)
+
+
+    return render_template('userPage.html', user=users)
 
 @app.route("/newListing")
 @login_required
@@ -128,7 +155,7 @@ def showListings():
 #get user's id
 @loginManager.user_loader
 def load_user(userid):
-    return User(userid, 'Participant')
+    return User(userid, 'participant')
 
 @loginManager.unauthorized_handler
 def unauthorized():
