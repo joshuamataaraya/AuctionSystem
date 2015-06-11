@@ -7,8 +7,8 @@ class SQLConnection:
         self.server = "autionDB"
 
         if userType == "admin":
-            self.user = "Admin"
-            self.password = "admin"
+            self.user = "admin"
+            self.password = "Admin"
         elif userType == "agent":
             self.user = "App"
             self.password = "app"

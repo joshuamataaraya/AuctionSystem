@@ -6,7 +6,7 @@ from flask_login import (LoginManager, login_user,
 from user import User
 from sql import SQLConnection
 from db import (getUserType, getListingsByUser,
-    getWinningListingsByUser)
+    getWinningListingsByUser, checkLogin)
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -68,9 +68,9 @@ def login():
         alias = request.form['alias'].encode("UTF-8")
         password = request.form['password'].encode("UTF-8")
 
-        user = User(alias, 'participant')
+        user = User(alias, getUserType(alias))
 
-        if True:    #if valid user
+        if checkLogin(alias, password):    #if valid user
             login_user(user) #login the user
             #show login msg
             flash('You are now logged in!')
@@ -155,7 +155,7 @@ def showListings():
 #get user's id
 @loginManager.user_loader
 def load_user(userid):
-    return User(userid, 'participant')
+    return User(userid, getUserType(userid))
 
 @loginManager.unauthorized_handler
 def unauthorized():

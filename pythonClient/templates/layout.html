@@ -37,7 +37,10 @@
             <li><a href="{{url_for('userPage')}}">
               {{current_user.userid}} ({{current_user.userType}})
             </a></li>
+
+            {% if current_user.userType == "participant" %}
             <li><a href="{{ url_for('newListing') }}">New Listing</a></li>
+            {% endif %}
 
             {% if current_user.userType == "admin" %}
               <li><a href="{{ url_for('newAgent') }}">New Agent</a></li>
