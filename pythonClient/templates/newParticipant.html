@@ -1,0 +1,31 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
+
+  <h2>Add a new Participant</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="usr">Participant First Name</label>
+    <input type="text" class="form-control" name="agentFirstName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Participant Last Name</label>
+    <input type="text" class="form-control" name="agentLastName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Participant Alias</label>
+    <input type="text" class="form-control" autocomplete="off" name="agentAlias">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Participant Password</label>
+    <input type="password" class="form-control" autocomplete="off" name="agentPassword">
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Add Participant</button>
+
+</form>
+{% endblock %}

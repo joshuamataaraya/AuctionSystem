@@ -50,10 +50,10 @@
             {% endif %}
 
             {% if current_user.userType == "agent" %}
-              <li><a href="{{ url_for('newAgent') }}">New Participant</a></li>
-              <li><a href="{{ url_for('modifyAgent') }}">Modify Participant</a></li>
-              <li><a href="{{ url_for('reactivateAgent') }}">Reactivate Participant</a></li>
-              <li><a href="{{ url_for('suspendAgent') }}">Suspend Participant</a></li>
+              <li><a href="{{ url_for('newParticipant') }}">New Participant</a></li>
+              <li><a href="{{ url_for('modifyParticipant') }}">Modify Participant</a></li>
+              <li><a href="{{ url_for('reactivateParticipant') }}">Reactivate Participant</a></li>
+              <li><a href="{{ url_for('suspendParticipant') }}">Suspend Participant</a></li>
             {% endif %}
 
           </ul>

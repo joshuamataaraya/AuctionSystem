@@ -5,9 +5,7 @@ from flask_login import (LoginManager, login_user,
 
 from user import User
 from sql import SQLConnection
-from db import (getUserType, getListingsByUser,
-    getWinningListingsByUser, checkLogin, dbNewAgent,
-    dbGetAgents, dbModifyAgent, dbSuspendAgent,dbActivateAgent)
+from db import *
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -90,17 +88,7 @@ def logout():
 @app.route("/userPage", methods=['GET', 'POST'])
 @login_required
 def userPage():
-    sqlCon = SQLConnection(current_user.userType)
-    con = sqlCon.connect()
-
-    cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspGetParticipants')
-
-    users = []
-    for row in cursor:
-        users.append(row['Alias'])
-    #close connection
-    sqlCon.close(con)
+    users = dbGetParticipants(current_user.userType)
 
     if request.method == 'POST':
         user = request.form['user']
@@ -123,7 +111,9 @@ def userPage():
 def newListing():
     return render_template('newListing.html')
 
-#Admin stuff
+
+
+#Admin stuff    ***
 @app.route("/newAgent", methods=['GET', 'POST'])
 @login_required
 def newAgent():
@@ -164,7 +154,6 @@ def reactivateAgent():
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
-
         dbActivateAgent(current_user.userType, alias)
         flash("Agent Activated!")
 
@@ -179,11 +168,72 @@ def suspendAgent():
         alias = request.form['agentSelect']
 
         dbSuspendAgent(current_user.userType, alias)
+
         flash("Agent Suspended!")
 
     return render_template('suspendAgent.html', agents=agents)
 
-#Agent stuff
+
+
+#Agent stuff ***
+@app.route("/newParticipant", methods=['GET', 'POST'])
+@login_required
+def newParticipant():
+    if request.method == 'POST':
+        name = request.form['participantFirstName']
+        lastName = request.form['participantLastName']
+        alias = request.form['participantAlias']
+        password = request.form['participantPassword']
+
+        #add new Agent
+        dbNewAgent(current_user.userType,
+            name, lastName, alias, password)
+
+        flash("Participant Successfully added to DB!")
+
+    return render_template('newParticipant.html')
+
+@app.route("/modifyParticipant", methods=['GET', 'POST'])
+@login_required
+def modifyParticipant():
+
+    agents = dbGetParticipants(current_user.userType)
+
+    if request.method == 'POST':
+        alias = request.form['participantSelect']
+        name = request.form['participantFirstName']
+        lastName = request.form['participantLastName']
+
+        dbModifyAgent(current_user.userType, alias, name, lastName)
+        flash("Participant Modified Successfully!")
+
+    return render_template('modifyParticipant.html', agents=agents)
+
+@app.route("/reactivateParticipant", methods=['GET', 'POST'])
+@login_required
+def reactivateParticipant():
+    agents = dbGetParticipants(current_user.userType)
+
+    if request.method == 'POST':
+        alias = request.form['participantSelect']
+        #dbActivateAgent(current_user.userType, alias)
+        flash("Participant Activated!")
+
+    return render_template('reactivateParticipant.html', agents=agents)
+
+@app.route("/suspendParticipant", methods=['GET', 'POST'])
+@login_required
+def suspendParticipant():
+    agents = dbGetParticipants(current_user.userType)
+
+    if request.method == 'POST':
+        alias = request.form['participantSelect']
+
+        #dbSuspendAgent(current_user.userType, alias)
+
+        flash("Participant Suspended!")
+
+    return render_template('suspendParticipant.html', agents=agents)
 
 
 #Listing stuff

@@ -1,11 +1,11 @@
 <!DOCTYPE html> {% extends "layout.html" %} {% block content %}
-<form class="form-horizontal" role="form"  method="post" autocomplete="off">
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
 
-  <h2>Supend Agent</h2>
+  <h2>Reactivate a Participant</h2>
   <br>
 
   <div class="form-group">
-    <label for="comment"> Select an Agent</label>
+    <label for="comment"> Select a Participant</label>
     <select class="form-control" name="agentSelect">
       {% for category in agents %}
         <option>{{ category }}</option>
@@ -14,7 +14,7 @@
   </div>
 
   <br>
-  <button class="btn btn-lg btn-primary" type="submit">Suspend Agent</button>
+  <button class="btn btn-lg btn-primary" type="submit">Reactivate Participant</button>
 
 </form>
 {% endblock %}

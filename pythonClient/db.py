@@ -76,7 +76,7 @@ def dbNewAgent(userType,name, lastName, alias, password):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspNewAgent', (alias,password, name, lastName,))
+    cursor.callproc('uspAddAgent', (alias,password, name, lastName,))
     con.commit()
     sqlCon.close(con)
 
@@ -117,3 +117,17 @@ def dbGetAgents(userType):
     #close connection
     sqlCon.close(con)
     return agents
+
+def dbGetParticipants(userType):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspGetParticipants')
+
+    participants = []
+    for row in cursor:
+        participants.append(row['Alias'])
+    #close connection
+    sqlCon.close(con)
+    return participants
