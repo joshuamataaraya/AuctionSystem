@@ -113,6 +113,14 @@ def dbActivateParticipant(userType, alias):
     con.commit()
     sqlCon.close(con)
 
+def dbSuspendParticipant(userType, alias):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspSuspendParticipant', (alias,))
+    con.commit()
+    sqlCon.close(con)
+
 
 def dbGetAgents(userType):
     sqlCon = SQLConnection(userType)

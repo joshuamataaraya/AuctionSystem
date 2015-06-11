@@ -7,6 +7,7 @@
   <div class="form-group">
     <label for="comment"> Select a Participant</label>
     <select class="form-control" name="participantSelect">
+      <option>----</option>
       {% for category in agents %}
         <option>{{ category }}</option>
       {% endfor %}

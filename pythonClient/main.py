@@ -228,8 +228,8 @@ def suspendParticipant():
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
-
-        #dbSuspendAgent(current_user.userType, alias)
+        dbSuspendParticipant(current_user.userType, alias)
+        flash("Participant Suspended!")
 
         flash("Participant Suspended!")
 
