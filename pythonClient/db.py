@@ -1,4 +1,5 @@
 from sql import SQLConnection
+import pymssql
 
 def checkLogin(alias, password):
     result = False
@@ -76,6 +77,7 @@ def dbNewAgent(userType,name, lastName, alias, password):
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspNewAgent', (alias,password, name, lastName,))
+    con.commit()
     sqlCon.close(con)
 
 def dbModifyAgent(userType, alias, name, lastName):
@@ -83,13 +85,15 @@ def dbModifyAgent(userType, alias, name, lastName):
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyAgentData', (alias, name, lastName,))
+    con.commit()
     sqlCon.close(con)
 
 def dbSuspendAgent(userType, alias):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
-    cursor = con.cursor(as_dict=True)
+    cursor = con.cursor()
     cursor.callproc('uspSuspendAgent', (alias,))
+    con.commit()
     sqlCon.close(con)
 
 def dbActivateAgent(userType, alias):
@@ -97,6 +101,7 @@ def dbActivateAgent(userType, alias):
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAllowAgent', (alias,))
+    con.commit()
     sqlCon.close(con)
 
 def dbGetAgents(userType):
