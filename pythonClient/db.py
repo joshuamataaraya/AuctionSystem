@@ -91,7 +91,7 @@ def dbModifyAgent(userType, alias, name, lastName):
 def dbSuspendAgent(userType, alias):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
-    cursor = con.cursor()
+    cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSuspendAgent', (alias,))
     con.commit()
     sqlCon.close(con)
