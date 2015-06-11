@@ -7,7 +7,7 @@ from user import User
 from sql import SQLConnection
 from db import (getUserType, getListingsByUser,
     getWinningListingsByUser, checkLogin, dbNewAgent,
-    dbGetAgents, dbModifyAgent)
+    dbGetAgents, dbModifyAgent, dbSuspendAgent,dbActivateAgent)
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -152,7 +152,7 @@ def modifyAgent():
         name = request.form['agentFirstName']
         lastName = request.form['agentLastName']
 
-        dbModifyAgent(current_user.id, alias, name, lastName)
+        dbModifyAgent(current_user.userType, alias, name, lastName)
         flash("Agent Modified Successfully!")
 
     return render_template('modifyAgent.html', agents=agents)
@@ -165,7 +165,7 @@ def reactivateAgent():
     if request.method == 'POST':
         alias = request.form['agentSelect']
 
-        dbActivateAgent(current_user.id, alias)
+        dbActivateAgent(current_user.userType, alias)
         flash("Agent Activated!")
 
     return render_template('reactivateAgent.html', agents=agents)
@@ -177,8 +177,8 @@ def suspendAgent():
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
-        
-        dbSuspendAgent(current_user.id, alias)
+
+        dbSuspendAgent(current_user.userType, alias)
         flash("Agent Suspended!")
 
     return render_template('suspendAgent.html', agents=agents)
