@@ -70,3 +70,45 @@ def getWinningListingsByUser(user, userId, userType):
         listings.append(row['Alias'])
     sqlCon.close(con)
     return listings
+
+def dbNewAgent(userType,name, lastName, alias, password):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspNewAgent', (alias,password, name, lastName,))
+    sqlCon.close(con)
+
+def dbModifyAgent(userType, alias, name, lastName):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspModifyAgentData', (alias, name, lastName,))
+    sqlCon.close(con)
+
+def dbSuspendAgent(userType, alias):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspSuspendAgent', (alias,))
+    sqlCon.close(con)
+
+def dbActivateAgent(userType, alias):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspAllowAgent', (alias,))
+    sqlCon.close(con)
+
+def dbGetAgents(userType):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspGetAgents')
+
+    agents = []
+    for row in cursor:
+        agents.append(row['Alias'])
+    #close connection
+    sqlCon.close(con)
+    return agents

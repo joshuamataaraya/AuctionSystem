@@ -6,7 +6,8 @@ from flask_login import (LoginManager, login_user,
 from user import User
 from sql import SQLConnection
 from db import (getUserType, getListingsByUser,
-    getWinningListingsByUser, checkLogin)
+    getWinningListingsByUser, checkLogin, dbNewAgent,
+    dbGetAgents, dbModifyAgent)
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3nan --~XHH!jmN]LWX/,?RT'
@@ -123,25 +124,64 @@ def newListing():
     return render_template('newListing.html')
 
 #Admin stuff
-@app.route("/newAgent")
+@app.route("/newAgent", methods=['GET', 'POST'])
 @login_required
 def newAgent():
+    if request.method == 'POST':
+        name = request.form['agentFirstName']
+        lastName = request.form['agentLastName']
+        alias = request.form['agentAlias']
+        password = request.form['agentPassword']
+
+        #add new Agent
+        dbNewAgent(current_user.userType,
+            name, lastName, alias, password)
+
+        flash("Agent Successfully added to DB!")
+
     return render_template('newAgent.html')
 
-@app.route("/modifyAgent")
+@app.route("/modifyAgent", methods=['GET', 'POST'])
 @login_required
 def modifyAgent():
-    return render_template('modifyAgent.html')
 
-@app.route("/reactivateAgent")
+    agents = dbGetAgents(current_user.userType)
+
+    if request.method == 'POST':
+        alias = request.form['agentSelect']
+        name = request.form['agentFirstName']
+        lastName = request.form['agentLastName']
+
+        dbModifyAgent(current_user.id, alias, name, lastName)
+        flash("Agent Modified Successfully!")
+
+    return render_template('modifyAgent.html', agents=agents)
+
+@app.route("/reactivateAgent", methods=['GET', 'POST'])
 @login_required
 def reactivateAgent():
-    return render_template('reactivateAgent.html')
+    agents = dbGetAgents(current_user.userType)
 
-@app.route("/suspendAgent")
+    if request.method == 'POST':
+        alias = request.form['agentSelect']
+
+        dbActivateAgent(current_user.id, alias)
+        flash("Agent Activated!")
+
+    return render_template('reactivateAgent.html', agents=agents)
+
+@app.route("/suspendAgent", methods=['GET', 'POST'])
 @login_required
 def suspendAgent():
-    return render_template('suspendAgent.html')
+    agents = dbGetAgents(current_user.userType)
+
+    if request.method == 'POST':
+        alias = request.form['agentSelect']
+        
+        dbSuspendAgent(current_user.id, alias)
+        flash("Agent Suspended!")
+
+    return render_template('suspendAgent.html', agents=agents)
 
 #Agent stuff
 

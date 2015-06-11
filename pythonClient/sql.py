@@ -7,11 +7,11 @@ class SQLConnection:
         self.server = "autionDB"
 
         if userType == "admin":
-            self.user = "admin"
+            self.user = "Admin"
             self.password = "Admin"
         elif userType == "agent":
-            self.user = "App"
-            self.password = "app"
+            self.user = "Agent1"
+            self.password = "FirstAgent"
         elif userType == "participant":
             self.user = "user"
             self.password = "123"

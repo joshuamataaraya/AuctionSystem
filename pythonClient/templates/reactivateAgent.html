@@ -1,5 +1,5 @@
 <!DOCTYPE html> {% extends "layout.html" %} {% block content %}
-<form class="form-horizontal" role="form" autocomplete="off">
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
 
   <h2>Reactivate an Agent</h2>
   <br>
@@ -7,7 +7,9 @@
   <div class="form-group">
     <label for="comment"> Select an Agent</label>
     <select class="form-control" name="agentSelect">
-      <option>----</option>
+      {% for category in agents %}
+        <option>{{ category }}</option>
+      {% endfor %}
     </select>
   </div>
 
