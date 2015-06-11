@@ -76,7 +76,7 @@ def dbNewAgent(userType,name, lastName, alias, password):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspAddAgent', (alias,password, name, lastName,))
+    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,))
     con.commit()
     sqlCon.close(con)
 
@@ -103,6 +103,16 @@ def dbActivateAgent(userType, alias):
     cursor.callproc('uspAllowAgent', (alias,))
     con.commit()
     sqlCon.close(con)
+
+
+def dbActivateParticipant(userType, alias):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspAllowParticipant', (alias,))
+    con.commit()
+    sqlCon.close(con)
+
 
 def dbGetAgents(userType):
     sqlCon = SQLConnection(userType)

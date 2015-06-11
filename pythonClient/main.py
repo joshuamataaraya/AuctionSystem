@@ -216,7 +216,7 @@ def reactivateParticipant():
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
-        #dbActivateAgent(current_user.userType, alias)
+        dbActivateParticipant(current_user.userType, alias)
         flash("Participant Activated!")
 
     return render_template('reactivateParticipant.html', agents=agents)
