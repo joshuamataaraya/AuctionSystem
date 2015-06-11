@@ -13,8 +13,8 @@ class SQLConnection:
             self.user = "Agent1"
             self.password = "FirstAgent"
         elif userType == "participant":
-            self.user = "user"
-            self.password = "123"
+            self.user = "Participant"
+            self.password = "AppParticipant"
         else:
             self.user = "App"
             self.password = "app"
