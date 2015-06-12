@@ -184,7 +184,7 @@ def newAgent():
 @login_required
 def modifyAgent():
 
-    agents = dbGetAgents(current_user.userType)
+    agents = dbGetAgents(current_user.userType,2)
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
@@ -200,27 +200,29 @@ def modifyAgent():
 @app.route("/reactivateAgent", methods=['GET', 'POST'])
 @login_required
 def reactivateAgent():
-    agents = dbGetAgents(current_user.userType)
+    agents = dbGetAgents(current_user.userType,1)
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
         dbActivateAgent(current_user.userType, alias)
         flash("Agent Activated!")
+    if len(agents)==0:
+            flash("we dont have Suspended Agents")
 
     return render_template('reactivateAgent.html', agents=agents)
 
 @app.route("/suspendAgent", methods=['GET', 'POST'])
 @login_required
 def suspendAgent():
-    agents = dbGetAgents(current_user.userType)
-
+    agents = dbGetAgents(current_user.userType,0)
     if request.method == 'POST':
         alias = request.form['agentSelect']
 
         dbSuspendAgent(current_user.userType, alias)
 
         flash("Agent Suspended!")
-
+    if len(agents)==0:
+        flash("We dont have Activated Agents")
     return render_template('suspendAgent.html', agents=agents)
 
 
@@ -257,11 +259,11 @@ def newParticipant():
 @login_required
 def modifyParticipant():
 
-    agents = dbGetParticipants(current_user.userType)
+    agents = dbGetParticipants(current_user.userType,2)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
-        name = request.form['participantFirstName']
+        name = request.form['FirstName']
         lastName = request.form['participantLastName']
         email=request.form['participantEmail']
         address=request.form['participantAddress']
@@ -274,26 +276,28 @@ def modifyParticipant():
 @app.route("/reactivateParticipant", methods=['GET', 'POST'])
 @login_required
 def reactivateParticipant():
-    agents = dbGetParticipants(current_user.userType)
+    agents = dbGetParticipants(current_user.userType,1)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
         dbActivateParticipant(current_user.userType, alias)
         flash("Participant Activated!")
-
+    if len(agents)==0:
+        flash("We dont have Suspended Participants")
     return render_template('reactivateParticipant.html', agents=agents)
 
 @app.route("/suspendParticipant", methods=['GET', 'POST'])
 @login_required
 def suspendParticipant():
-    agents = dbGetParticipants(current_user.userType)
+    agents = dbGetParticipants(current_user.userType,0)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
         dbSuspendParticipant(current_user.userType, alias)
         flash("Participant Suspended!")
 
-        flash("Participant Suspended!")
+    if len(agents)==0:
+        flash("We dont have Suspended Participants")
 
     return render_template('suspendParticipant.html', agents=agents)
 

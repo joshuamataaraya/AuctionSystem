@@ -144,15 +144,14 @@ def dbSuspendParticipant(userType, alias):
     sqlCon.close(con)
 
 
-def dbGetAgents(userType):
+def dbGetAgents(userType,JustSuspended):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
-    cursor = con.cursor(as_dict=True)
     if JustSuspended==0:
         cursor.callproc('uspGetAgents',(0,))
-    elif JustSuspended==0:
+    elif JustSuspended==1:
         cursor.callproc('uspGetAgents',(1,))
     else:
         cursor.callproc('uspGetAgents',(2,))
@@ -163,12 +162,17 @@ def dbGetAgents(userType):
     sqlCon.close(con)
     return agents
 
-def dbGetParticipants(userType):
+def dbGetParticipants(userType,JustSuspended):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspGetParticipants')
+    if JustSuspended==0:
+        cursor.callproc('uspGetParticipants',(0,))
+    elif JustSuspended==1:
+        cursor.callproc('uspGetParticipants',(1,))
+    else:
+        cursor.callproc('uspGetParticipants',(2,))
 
     participants = []
     for row in cursor:
