@@ -1,0 +1,38 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
+
+  <h2>Add a Card to a Participant</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="comment"> Select a Participant</label>
+    <select class="form-control" name="participantSelect">
+      {% for participant in participants %}
+        <option>{{ participant }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Card number</label>
+    <input type="text" class="form-control" name="cardNumber">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Security code</label>
+    <input type="password" class="form-control" name="securityCode">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Name on the card</label>
+    <input type="text" class="form-control" name="cardName">
+  </div>
+
+  <div class="form-group">
+      <label for="comment"> Card expiration date</label>
+      <input type="date" class="form-control" name="expirationDate">
+    </div>
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Add Card</button>
+</form>
+{% endblock %}

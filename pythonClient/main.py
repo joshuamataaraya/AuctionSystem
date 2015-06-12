@@ -284,6 +284,32 @@ def SetUp():
 
 
 #Agent stuff ***
+@app.route("/addCard", methods=['GET', 'POST'])
+@login_required
+def addCard():
+    # if request.method == 'POST':
+        # name = request.form['participantFirstName']
+        # lastName = request.form['participantLastName']
+        # alias = request.form['participantAlias']
+        # password = request.form['participantPassword']
+        # personalId=request.form['participantId']
+        # address=request.form['participantAddress']
+        # email=request.form['participantEmail']
+        # telCel=request.form['telCel']
+        # telWork=request.form['telWork']
+        # telHome=request.form['telHome']
+        # telOther=request.form['telOther']
+        # phones=[telCel,telWork,telHome,telOther]
+
+        # #add new Agent
+        # dbNewParticipant(current_user.userType,
+        #     name, lastName, alias, password,address,personalId,email)
+
+        # dbAddPhones(current_user.userType,alias,phones)
+
+        # flash("Participant Successfully added to DB!")
+
+    return render_template('addCard.html')
 @app.route("/newParticipant", methods=['GET', 'POST'])
 @login_required
 def newParticipant():
