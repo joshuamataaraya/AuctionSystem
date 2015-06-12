@@ -88,7 +88,7 @@ def dbNewAgent(userType,name, lastName, alias,
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,address,personalId))
+    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,address,personalId,))
     con.commit()
     sqlCon.close(con)
 
@@ -102,11 +102,11 @@ def dbAddPhones(userType,alias,phones):
     con.commit()
     sqlCon.close(con)
 
-def dbModifyAgent(userType, alias, name, lastName):
+def dbModifyAgent(userType, alias, name, lastName,address):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspModifyAgentData', (alias, name, lastName,))
+    cursor.callproc('uspModifyAgentData', (alias, name, lastName,address,))
     con.commit()
     sqlCon.close(con)
 
@@ -149,8 +149,13 @@ def dbGetAgents(userType):
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspGetAgents')
-
+    cursor = con.cursor(as_dict=True)
+    if JustSuspended==0:
+        cursor.callproc('uspGetAgents',(0,))
+    elif JustSuspended==0:
+        cursor.callproc('uspGetAgents',(1,))
+    else:
+        cursor.callproc('uspGetAgents',(2,))
     agents = []
     for row in cursor:
         agents.append(row['Alias'])
@@ -171,3 +176,20 @@ def dbGetParticipants(userType):
     #close connection
     sqlCon.close(con)
     return participants
+
+def dbNewParticipant(userType,name, lastName, alias, 
+    password,address,personalId,email):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspNewParticipant', (alias,password, name, lastName,address,personalId,email,))
+    con.commit()
+    sqlCon.close(con)
+
+def dbModifyParticipant(userType, alias, name, lastName,email,address):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspModifyParticipantData', (alias, name, lastName,address,email,))
+    con.commit()
+    sqlCon.close(con)
