@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from flask import (Flask, render_template, request,
                     flash, redirect, url_for)
 from flask_login import (LoginManager, login_user,
@@ -41,6 +44,7 @@ def index():
     if request.method == 'POST':
         category1 = request.form['category1']
         category2 = request.form['category2']
+
         if category1 == "----":
             category1 = None
         if category2 == "----":
@@ -52,9 +56,13 @@ def index():
         #get all listings
         cursor.callproc('uspViewAvailableAuctions', (current_user.userid,
                     category1, category2,))
-        #sqlCon.close(con)
+        entries = []
+        for row in cursor:
+            entries.append(row)
+
+        sqlCon.close(con)
         return render_template('index.html',
-            entries=cursor, cate1=cate1, cate2=cate2)
+            entries=entries, cate1=cate1, cate2=cate2)
 
 
     return render_template('index.html', cate1 = cate1, cate2 = cate2)
@@ -131,7 +139,6 @@ def newListing():
     cate2.sort()
 
     if request.method == 'POST':
-        listingName = request.form['listingName']
         category1 = request.form['category1']
         category2 = request.form['category2']
         description = request.form['description']
@@ -144,11 +151,9 @@ def newListing():
             if char == '/':
                 char = '-'
 
-        print(listingEndDate)
-
         dbNewListing(current_user.userType, current_user.userid,
-        description, None, category1, category2, listingEndDate,
-         startingPrice)
+            description, category1, category2, listingEndDate,
+                startingPrice)
         flash("Listing had been added!")
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)

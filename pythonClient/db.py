@@ -16,12 +16,14 @@ def checkLogin(alias, password):
     return result
 
 def dbNewListing(userType, alias,
-    description, img, category, subCategory, listingEndDate, startingPrice):
+    description, category, subCategory, listingEndDate, startingPrice):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspNewAuction', (alias, description, img, category,
-    subCategory, listingEndDate, startingPrice,))
+
+    cursor.callproc('uspNewAuction', (alias, description, category,
+        subCategory, listingEndDate,startingPrice,))
+
     con.commit()
     sqlCon.close(con)
 
@@ -88,7 +90,8 @@ def dbNewAgent(userType,name, lastName, alias,
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,address,personalId))
+    cursor.callproc('uspAddNewAgent', (alias,password,
+        name, lastName,address,personalId,))
     con.commit()
     sqlCon.close(con)
 
