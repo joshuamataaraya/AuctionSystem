@@ -106,10 +106,42 @@ def userPage():
 
     return render_template('userPage.html', user=users)
 
-@app.route("/newListing")
+@app.route("/newListing", methods=['GET', 'POST'])
 @login_required
 def newListing():
-    return render_template('newListing.html')
+    sqlCon = SQLConnection(current_user.userType)
+    con = sqlCon.connect()
+
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspViewCategories')
+
+    cate1 = []
+    cate2 = []
+
+    for row in cursor:
+        if (row['category']) not in cate1:
+            cate1.append(row['category'])
+        if (row['subCategory']) not in cate2:
+            cate2.append(row['subCategory'])
+
+    #close connection
+    sqlCon.close(con)
+
+    cate1.sort()
+    cate2.sort()
+
+    if request.method == 'POST':
+        listingName = request.form['listingName']
+        category1 = request.form['category1']
+        category2 = request.form['category2']
+        description = request.form['description']
+        listingEndDate = request.form['listingEndDate']
+        startingPrice = request.form['startingPrice']
+
+        dbNewListing(current_user.userType, current_user.userId,
+        description, None, category1, category2, listingEndDate, startingPrice)
+
+    return render_template('newListing.html', cate1=cate1, cate2=cate2)
 
 
 

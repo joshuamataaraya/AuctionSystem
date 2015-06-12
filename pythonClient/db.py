@@ -15,6 +15,16 @@ def checkLogin(alias, password):
     sqlCon.close(con)
     return result
 
+def dbNewListing(userType, alias,
+    description, img, category, subCategory, listingEndDate, startingPrice):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspNewAuction', (alias, description, img, category,
+    subCategory, listingEndDate, startingPrice,))
+    con.commit()
+    sqlCon.close(con)
+
 
 def getUserType(alias):
     sqlCon = SQLConnection()
@@ -23,6 +33,7 @@ def getUserType(alias):
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('upsGetKindOfUser', (alias,))
+
 
     for row in cursor:
         if row['Exito'] == 0:
@@ -72,7 +83,7 @@ def getWinningListingsByUser(user, userId, userType):
     sqlCon.close(con)
     return listings
 
-def dbNewAgent(userType,name, lastName, alias, 
+def dbNewAgent(userType,name, lastName, alias,
     password,address,personalId):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
