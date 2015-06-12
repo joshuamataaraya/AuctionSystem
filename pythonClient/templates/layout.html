@@ -43,10 +43,12 @@
             {% endif %}
 
             {% if current_user.userType == "admin" %}
+              <li><a href="{{ url_for('newAdmin') }}">New Admin</a></li>
               <li><a href="{{ url_for('newAgent') }}">New Agent</a></li>
               <li><a href="{{ url_for('modifyAgent') }}">Modify Agent</a></li>
               <li><a href="{{ url_for('reactivateAgent') }}">Reactivate Agent</a></li>
               <li><a href="{{ url_for('suspendAgent') }}">Suspend Agent</a></li>
+              <li><a href="{{ url_for('SetUp') }}">SetUp</a></li>
             {% endif %}
 
             {% if current_user.userType == "agent" %}

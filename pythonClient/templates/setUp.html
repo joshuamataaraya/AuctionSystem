@@ -1,0 +1,21 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
+
+  <h2>Set Up System Values</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="usr">Commission</label>
+    <input type="text" class="form-control" name="commission">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Minimum Price to increase into a new bid</label>
+    <input type="text" class="form-control" name="minimumIncrease">
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Update SetUp</button>
+
+</form>
+{% endblock %}

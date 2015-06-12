@@ -178,6 +178,29 @@ def newListing():
 
 
 #Admin stuff    ***
+@app.route("/newAdmin", methods=['GET', 'POST'])
+@login_required
+def newAdmin():
+    if request.method == 'POST':
+        name = request.form['adminFirstName']
+        lastName = request.form['adminLastName']
+        alias = request.form['adminAlias']
+        password = request.form['adminPassword']
+        personalId=request.form['adminId']
+        address=request.form['adminAddress']
+        telCel=request.form['telCel']
+        telWork=request.form['telWork']
+        telHome=request.form['telHome']
+        telOther=request.form['telOther']
+        phones=[telCel,telWork,telHome,telOther]
+        #add new Agent
+        dbNewAdmin(current_user.userType,
+            name, lastName, alias, password,
+            address,personalId)
+        dbAddPhones(current_user.userType,alias,phones)
+        flash("Agent Successfully added to DB!")
+
+    return render_template('newAdministrator.html')
 @app.route("/newAgent", methods=['GET', 'POST'])
 @login_required
 def newAgent():
@@ -246,7 +269,18 @@ def suspendAgent():
     if len(agents)==0:
         flash("We dont have Activated Agents")
     return render_template('suspendAgent.html', agents=agents)
+@app.route("/SetUp", methods=['GET', 'POST'])
+@login_required
+def SetUp():
+    if request.method == 'POST':
+        commission = request.form['commission']
+        minimumIncrease = request.form['minimumIncrease']
+        #add new Agent
+        dbSetUpSystem(current_user.userType,
+            commission,minimumIncrease)
+        flash("Values Successfully updated to DB!")
 
+    return render_template('setUp.html')
 
 
 #Agent stuff ***

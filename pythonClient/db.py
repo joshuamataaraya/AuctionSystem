@@ -91,6 +91,15 @@ def getWinningListingsByUser(user, userId, userType):
     sqlCon.close(con)
     return listings
 
+def dbNewAdmin(userType,name, lastName, alias,
+    password,address,personalId):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspAddNewAdmin', (alias,password, name, lastName,address,personalId,))
+    con.commit()
+    sqlCon.close(con)
+
 def dbNewAgent(userType,name, lastName, alias,
     password,address,personalId):
     sqlCon = SQLConnection(userType)
@@ -118,6 +127,14 @@ def dbModifyAgent(userType, alias, name, lastName,address):
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyAgentData', (alias, name, lastName,address,))
+    con.commit()
+    sqlCon.close(con)
+
+def dbSetUpSystem(userType,commission,minimumIncrease):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspSetSystemParameters', (commission,minimumIncrease,))
     con.commit()
     sqlCon.close(con)
 

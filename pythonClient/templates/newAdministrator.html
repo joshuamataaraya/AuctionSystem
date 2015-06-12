@@ -1,0 +1,50 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+<form class="form-horizontal" method="post" role="form" autocomplete="off">
+
+  <h2>Add a new Administrator</h2>
+  <br>
+
+  <div class="form-group">
+    <label for="usr">Admin First Name</label>
+    <input type="text" class="form-control" name="adminFirstName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Admin Last Name</label>
+    <input type="text" class="form-control" name="adminLastName">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Personal ID</label>
+    <input type="text" class="form-control" name="adminId" placeholder="Personal Id">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Admin's Address</label>
+    <textarea type="text" class="form-control" name="adminAddress"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Telephone(s)</label>
+    <input type="phone" class="form-control" name="telCel" placeholder="Mobile">
+    <input type="phone" class="form-control" name="telWork" placeholder="Work">
+    <input type="phone" class="form-control" name="telHome" placeholder="Home">
+    <input type="phone" class="form-control" name="telOther" placeholder="Other">
+  </div>
+
+
+  <div class="form-group">
+    <label for="usr">Admin Alias</label>
+    <input type="text" class="form-control" autocomplete="off" name="adminAlias">
+  </div>
+
+  <div class="form-group">
+    <label for="usr">Admin Password</label>
+    <input type="password" class="form-control" autocomplete="off" name="adminPassword">
+  </div>
+
+  <br>
+  <button class="btn btn-lg btn-primary" type="submit">Add Administrator</button>
+
+</form>
+{% endblock %}
