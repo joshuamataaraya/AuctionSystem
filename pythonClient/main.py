@@ -42,27 +42,36 @@ def index():
     cate2.sort()
 
     if request.method == 'POST':
-        category1 = request.form['category1']
-        category2 = request.form['category2']
+        try:
+            newBid = request.form['newBid']
+            itemId = request.values.get('idItem')
 
-        if category1 == "----":
-            category1 = None
-        if category2 == "----":
-            category2 = None
+            dbPlaceBid(current_user.userType,
+                itemId, current_user.userid, newBid)
 
-        sqlCon = SQLConnection(current_user.userType)
-        con = sqlCon.connect()
-        cursor = con.cursor(as_dict=True)
-        #get all listings
-        cursor.callproc('uspViewAvailableAuctions', (current_user.userid,
-                    category1, category2,))
-        entries = []
-        for row in cursor:
-            entries.append(row)
+            flash("Your bid for " + newBid + " was successfull!")
+        except Exception:
+            category1 = request.form['category1']
+            category2 = request.form['category2']
 
-        sqlCon.close(con)
-        return render_template('index.html',
-            entries=entries, cate1=cate1, cate2=cate2)
+            if category1 == "----":
+                category1 = None
+            if category2 == "----":
+                category2 = None
+
+            sqlCon = SQLConnection(current_user.userType)
+            con = sqlCon.connect()
+            cursor = con.cursor(as_dict=True)
+            #get all listings
+            cursor.callproc('uspViewAvailableAuctions', (current_user.userid,
+                        category1, category2,))
+            entries = []
+            for row in cursor:
+                entries.append(row)
+
+            sqlCon.close(con)
+            return render_template('index.html',
+                entries=entries, cate1=cate1, cate2=cate2)
 
 
     return render_template('index.html', cate1 = cate1, cate2 = cate2)
@@ -96,7 +105,7 @@ def logout():
 @app.route("/userPage", methods=['GET', 'POST'])
 @login_required
 def userPage():
-    users = dbGetParticipants(current_user.userType)
+    users = dbGetParticipants(current_user.userType, 0)
 
     if request.method == 'POST':
         user = request.form['user']
@@ -151,9 +160,17 @@ def newListing():
             if char == '/':
                 char = '-'
 
-        dbNewListing(current_user.userType, current_user.userid,
-            description, category1, category2, listingEndDate,
-                startingPrice)
+        sqlCon = SQLConnection(current_user.userType)
+        con = sqlCon.connect()
+        cursor = con.cursor()
+
+        cursor.callproc('uspNewAuction', (current_user.userid, description,
+         category1, category2, listingEndDate,4000,))
+        sqlCon.close(con)
+
+        #dbNewListing(current_user.userType, current_user.userid,
+        #    description, category1, category2, listingEndDate,
+        #        startingPrice)
         flash("Listing had been added!")
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)

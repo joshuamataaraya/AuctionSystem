@@ -1,6 +1,16 @@
 from sql import SQLConnection
 import pymssql
 
+
+def dbPlaceBid(userType, itemId, alias, newBid):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor()
+
+    cursor.callproc('uspNewBid', (itemId, alias,newBid,))
+    con.commit()
+    sqlCon.close(con)
+
 def checkLogin(alias, password):
     result = False
 
@@ -22,8 +32,7 @@ def dbNewListing(userType, alias,
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspNewAuction', (alias, description, category,
-        subCategory, listingEndDate,startingPrice,))
-
+        subCategory, listingEndDate,int(startingPrice),))
     con.commit()
     sqlCon.close(con)
 
@@ -31,11 +40,8 @@ def dbNewListing(userType, alias,
 def getUserType(alias):
     sqlCon = SQLConnection()
     con = sqlCon.connect()
-
     cursor = con.cursor(as_dict=True)
-
     cursor.callproc('upsGetKindOfUser', (alias,))
-
 
     for row in cursor:
         if row['Exito'] == 0:
@@ -91,7 +97,7 @@ def dbNewAgent(userType,name, lastName, alias,
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
-    cursor.callproc('uspAddNewAgent', (alias,password, 
+    cursor.callproc('uspAddNewAgent', (alias,password,
         name, lastName,address,personalId,))
 
     con.commit()

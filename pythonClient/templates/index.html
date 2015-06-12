@@ -17,7 +17,7 @@
   </div>
 
   <div class="form-group">
-    <label for="comment"> Select Category II.</label>
+    <label for="comment"> Select SubCategory.</label>
     <select class="form-control" name="category2">
       <option>----</option>
       {% for category in cate2 %}
@@ -37,6 +37,8 @@
         <th>Description</th>
         <th>Seller</th>
         <th>Ends</th>
+        <th>Category</th>
+        <th>SubCategory</th>
       </tr>
     </thead>
     <tbody>
@@ -45,6 +47,17 @@
           <td>{{ (item['Descripcion']) }}</td>
           <td>{{ item['AliasVendedor'] }}</td>
           <td>{{ item['LimiteCierre'] }}</td>
+          <td>{{ item['Categoria'] }}</td>
+          <td>{{ item['SubCategoria'] }}</td>
+
+            <form method="post" class="form-inline">
+            <input hidden value="{{ item['IDItem'] }}" name="idItem">
+            <td><input type="number" name="newBid"></td>
+            <td><button class="btn" type="submit">
+              BID
+            </button></td>
+            </form>
+
         </tr>
       {% endfor %}
     </tbody>
