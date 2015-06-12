@@ -97,7 +97,7 @@ def dbAddPhones(userType,alias,phones):
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     for phone in phones:
-        if phone!=None:
+        if phone!="":
             cursor.callproc('uspAddPhoneNumber', (alias,phone,))
     con.commit()
     sqlCon.close(con)

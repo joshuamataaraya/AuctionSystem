@@ -136,10 +136,20 @@ def newListing():
         category2 = request.form['category2']
         description = request.form['description']
         listingEndDate = request.form['listingEndDate']
+        listingEndTime = request.form['listingEndTime']
         startingPrice = request.form['startingPrice']
 
-        dbNewListing(current_user.userType, current_user.userId,
-        description, None, category1, category2, listingEndDate, startingPrice)
+        listingEndDate += "T"+ listingEndTime
+        for char in listingEndDate:
+            if char == '/':
+                char = '-'
+
+        print(listingEndDate)
+
+        dbNewListing(current_user.userType, current_user.userid,
+        description, None, category1, category2, listingEndDate,
+         startingPrice)
+        flash("Listing had been added!")
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)
 
