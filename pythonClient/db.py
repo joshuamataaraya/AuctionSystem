@@ -72,11 +72,22 @@ def getWinningListingsByUser(user, userId, userType):
     sqlCon.close(con)
     return listings
 
-def dbNewAgent(userType,name, lastName, alias, password):
+def dbNewAgent(userType,name, lastName, alias, 
+    password,address,personalId):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
-    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,))
+    cursor.callproc('uspAddNewAgent', (alias,password, name, lastName,address,personalId))
+    con.commit()
+    sqlCon.close(con)
+
+def dbAddPhones(userType,alias,phones):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    for phone in phones:
+        if phone!=None:
+            cursor.callproc('uspAddPhoneNumber', (alias,phone,))
     con.commit()
     sqlCon.close(con)
 

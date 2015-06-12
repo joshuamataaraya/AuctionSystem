@@ -122,11 +122,18 @@ def newAgent():
         lastName = request.form['agentLastName']
         alias = request.form['agentAlias']
         password = request.form['agentPassword']
-
+        personalId=request.form['agentId']
+        address=request.form['agentAddress']
+        telCel=request.form['telCel']
+        telWork=request.form['telWork']
+        telHome=request.form['telHome']
+        telOther=request.form['telOther']
+        phones=[telCel,telWork,telHome,telOther]
         #add new Agent
         dbNewAgent(current_user.userType,
-            name, lastName, alias, password)
-
+            name, lastName, alias, password,
+            address,personalId)
+        dbAddPhones(current_user.userType,alias,phones)
         flash("Agent Successfully added to DB!")
 
     return render_template('newAgent.html')
