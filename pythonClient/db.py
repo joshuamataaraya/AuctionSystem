@@ -1,6 +1,6 @@
 from sql import SQLConnection
 import pymssql
-
+from flask import flash
 
 def dbPlaceBid(userType, itemId, alias, newBid):
     sqlCon = SQLConnection(userType)
@@ -9,6 +9,7 @@ def dbPlaceBid(userType, itemId, alias, newBid):
 
     cursor.callproc('uspNewBid', (itemId, alias,newBid,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def checkLogin(alias, password):
@@ -34,6 +35,7 @@ def dbNewListing(userType, alias,
     cursor.callproc('uspNewAuction', (alias, description, category,
         subCategory, listingEndDate,int(startingPrice),))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 
@@ -72,6 +74,7 @@ def getListingsByUser(user, userId, userType):
 
     for row in cursor:
         listings.append(row['Alias'])
+    checkError(cursor)
     sqlCon.close(con)
     return listings
 
@@ -88,6 +91,7 @@ def getWinningListingsByUser(user, userId, userType):
     cursor.callproc('uspViewWonAuctionHistory', (user,userId,))
     for row in cursor:
         listings.append(row['Alias'])
+    checkError(cursor)
     sqlCon.close(con)
     return listings
 
@@ -98,6 +102,7 @@ def dbNewAdmin(userType,name, lastName, alias,
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAddNewAdmin', (alias,password, name, lastName,address,personalId,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbNewAgent(userType,name, lastName, alias,
@@ -108,10 +113,10 @@ def dbNewAgent(userType,name, lastName, alias,
 
     cursor.callproc('uspAddNewAgent', (alias,password,
         name, lastName,address,personalId,))
-
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
-    
+
 def dbAddCard(userType,alias, cardNumber, securityCode,
     cardName, expirationDate):
     sqlCon = SQLConnection(userType)
@@ -121,6 +126,7 @@ def dbAddCard(userType,alias, cardNumber, securityCode,
     cursor.callproc('uspAddCard', (alias,securityCode,
         cardNumber, cardName,expirationDate,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbAddPhones(userType,alias,phones):
@@ -131,6 +137,7 @@ def dbAddPhones(userType,alias,phones):
         if phone!="":
             cursor.callproc('uspAddPhoneNumber', (alias,phone,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbModifyAgent(userType, alias, name, lastName,address):
@@ -139,6 +146,7 @@ def dbModifyAgent(userType, alias, name, lastName,address):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyAgentData', (alias, name, lastName,address,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbSetUpSystem(userType,commission,minimumIncrease):
@@ -147,6 +155,7 @@ def dbSetUpSystem(userType,commission,minimumIncrease):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSetSystemParameters', (commission,minimumIncrease,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbSuspendAgent(userType, alias):
@@ -155,6 +164,7 @@ def dbSuspendAgent(userType, alias):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSuspendAgent', (alias,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbActivateAgent(userType, alias):
@@ -163,6 +173,7 @@ def dbActivateAgent(userType, alias):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAllowAgent', (alias,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 
@@ -172,6 +183,7 @@ def dbActivateParticipant(userType, alias):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAllowParticipant', (alias,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbSuspendParticipant(userType, alias):
@@ -180,6 +192,7 @@ def dbSuspendParticipant(userType, alias):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSuspendParticipant', (alias,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 
@@ -197,6 +210,8 @@ def dbGetAgents(userType,JustSuspended):
     agents = []
     for row in cursor:
         agents.append(row['Alias'])
+
+    checkError(cursor)
     #close connection
     sqlCon.close(con)
     return agents
@@ -214,8 +229,11 @@ def dbGetParticipants(userType,JustSuspended):
         cursor.callproc('uspGetParticipants',(2,))
 
     participants = []
+    error=False;
     for row in cursor:
         participants.append(row['Alias'])
+
+    checkError(cursor)
     #close connection
     sqlCon.close(con)
     return participants
@@ -227,6 +245,7 @@ def dbNewParticipant(userType,name, lastName, alias,
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspNewParticipant', (alias,password, name, lastName,address,personalId,email,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
 
 def dbModifyParticipant(userType, alias, name, lastName,email,address):
@@ -235,4 +254,10 @@ def dbModifyParticipant(userType, alias, name, lastName,email,address):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyParticipantData', (alias, name, lastName,address,email,))
     con.commit()
+    checkError(cursor)
     sqlCon.close(con)
+
+def checkError(cursor):
+    for row in cursor:
+        if row['SUCCESS']==0:
+            flash(row['ERROR'])
