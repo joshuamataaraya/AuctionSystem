@@ -1,0 +1,35 @@
+<!DOCTYPE html> {% extends "layout.html" %} {% block content %}
+	<form method="post" class="form-inline">
+		<div class="form-group">
+		<label for="comment"> Place a Bid</label>
+		<input name="newBid" class="form-control" type="number"> 
+		</div>
+	
+		<button class="btn btn-primary" type="submit">Place Bid</button>
+  </form>
+  <br><br>
+  <h2>Past Bids</h2>
+	<div class="container">
+	  <table class="table table-hover table-striped">
+	    <thead>
+	      <tr>
+	        <th>Alias Bidder</th>
+			<th>Bidder Active?</th>
+	        <th>Amount</th>
+	        <th>When</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for item in entries %}
+	        <tr>
+	          <td>{{ (item['AliasPujador']) }}</td>
+			  <td>{{ (item['EstaSuspendida']) }}</td>
+			  <td>{{ (item['Monto']) }}</td>
+			  <td>{{ (item['Momento']) }}</td>
+	        </tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	</div>
+	
+{% endblock %}

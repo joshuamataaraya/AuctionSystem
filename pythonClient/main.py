@@ -42,14 +42,12 @@ def index():
     cate2.sort()
 
     if request.method == 'POST':
-        try:
-            newBid = request.form['newBid']
-            itemId = request.values.get('idItem')
-
-            dbPlaceBid(current_user.userType,
-                itemId, current_user.userid, newBid)
-
-            flash("Your bid for " + newBid + " was successfull!")
+        try: #if user selected newBid button
+            item = request.values.get('idItem')
+            #show them all past bids and let them bid
+            return redirect(url_for('bids', itemId=item))
+            
+            
         except Exception:
             category1 = request.form['category1']
             category2 = request.form['category2']
@@ -123,6 +121,22 @@ def userPage():
 
     return render_template('userPage.html', user=users)
 
+
+@app.route('/bid/item/<itemId>', methods=['GET', 'POST'])
+@login_required
+def bids(itemId):
+    
+    pastBids = dbBids(current_user.userType, current_user.userid,itemId)
+    
+    if request.method == 'POST':
+        newBid = request.form['newBid']
+        dbPlaceBid(current_user.userType,
+                itemId, current_user.userid, newBid)
+
+        flash("Your bid for " + newBid + " was successfull!")
+    
+    return render_template('bids.html', entries = pastBids)
+
 @app.route("/newListing", methods=['GET', 'POST'])
 @login_required
 def newListing():
@@ -160,17 +174,9 @@ def newListing():
             if char == '/':
                 char = '-'
 
-        sqlCon = SQLConnection(current_user.userType)
-        con = sqlCon.connect()
-        cursor = con.cursor()
-
-        cursor.callproc('uspNewAuction', (current_user.userid, description,
-         category1, category2, listingEndDate,4000,))
-        sqlCon.close(con)
-
-        #dbNewListing(current_user.userType, current_user.userid,
-        #    description, category1, category2, listingEndDate,
-        #        startingPrice)
+        dbNewListing(current_user.userType, current_user.userid,
+            description, category1, category2, listingEndDate,
+                startingPrice)
         flash("Listing had been added!")
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)

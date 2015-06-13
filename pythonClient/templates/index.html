@@ -39,6 +39,9 @@
         <th>Ends</th>
         <th>Category</th>
         <th>SubCategory</th>
+        <th>Initial Price</th>
+        <th>Is Closed</th>
+        <th>Is Suspended</th>
       </tr>
     </thead>
     <tbody>
@@ -49,10 +52,12 @@
           <td>{{ item['LimiteCierre'] }}</td>
           <td>{{ item['Categoria'] }}</td>
           <td>{{ item['SubCategoria'] }}</td>
+          <td>{{ item['PrecioInicial'] }}</td>
+          <td>{{ item['EstaCerrada'] }}</td>
+          <td>{{ item['EstaSuspendida'] }}</td>
 
             <form method="post" class="form-inline">
             <input hidden value="{{ item['IDItem'] }}" name="idItem">
-            <td><input type="number" name="newBid"></td>
             <td><button class="btn" type="submit">
               BID
             </button></td>

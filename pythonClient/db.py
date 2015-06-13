@@ -25,6 +25,19 @@ def checkLogin(alias, password):
     sqlCon.close(con)
     return result
 
+def dbBids(userType, alias, itemId):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+
+    cursor.callproc('uspViewBidsForAnAuction', (itemId,alias,))
+    
+    pastBids = []
+    for row in cursor:
+        pastBids.append(row)        
+    sqlCon.close(con)
+    return pastBids
+
 def dbNewListing(userType, alias,
     description, category, subCategory, listingEndDate, startingPrice):
     sqlCon = SQLConnection(userType)
@@ -32,7 +45,7 @@ def dbNewListing(userType, alias,
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspNewAuction', (alias, description, category,
-        subCategory, listingEndDate,int(startingPrice),))
+        subCategory, listingEndDate,startingPrice,))
     con.commit()
     sqlCon.close(con)
 
