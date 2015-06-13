@@ -38,6 +38,14 @@ def dbBids(userType, alias, itemId):
     sqlCon.close(con)
     return pastBids
 
+def dbComment(userType, alias, comment, auctionId):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspNewComment', (alias,comment,
+            auctionId,))
+    sqlCon.close(con)
+
 def dbNewListing(userType, alias,
     description, category, subCategory, listingEndDate, startingPrice):
     sqlCon = SQLConnection(userType)
@@ -84,7 +92,7 @@ def getListingsByUser(user, userId, userType):
     cursor.callproc('uspViewSellerHistory', (user, userId,))
 
     for row in cursor:
-        listings.append(row['Alias'])
+        listings.append(row)
     sqlCon.close(con)
     return listings
 
@@ -100,7 +108,7 @@ def getWinningListingsByUser(user, userId, userType):
     #get all listings
     cursor.callproc('uspViewWonAuctionHistory', (user,userId,))
     for row in cursor:
-        listings.append(row['Alias'])
+        listings.append(row)
     sqlCon.close(con)
     return listings
 
