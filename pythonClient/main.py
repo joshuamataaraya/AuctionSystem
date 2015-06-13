@@ -42,14 +42,12 @@ def index():
     cate2.sort()
 
     if request.method == 'POST':
-        try:
-            newBid = request.form['newBid']
-            itemId = request.values.get('idItem')
-
-            dbPlaceBid(current_user.userType,
-                itemId, current_user.userid, newBid)
-
-            flash("Your bid for " + newBid + " was successfull!")
+        try: #if user selected newBid button
+            item = request.values.get('idItem')
+            #show them all past bids and let them bid
+            return redirect(url_for('bids', itemId=item))
+            
+            
         except Exception:
             category1 = request.form['category1']
             category2 = request.form['category2']
@@ -106,22 +104,63 @@ def logout():
 @login_required
 def userPage():
     users = dbGetParticipants(current_user.userType, 0)
+    
+    mySold = getListingsByUser(current_user.userid,
+            current_user.userid, current_user.userType)
+    myWon = getWinningListingsByUser(current_user.userid,
+    current_user.userid, current_user.userType)
 
     if request.method == 'POST':
-        user = request.form['user']
-        userBids = request.form['userBids']
+        try: #if user selected comment button
+            auction = request.values.get('idItem')
+            comment = request.values.get('textComment')
+            
+            print auction
+            
+            #add the comment
+            dbComment(current_user.userType, current_user.userid,
+                comment, auction)
+            flash("Your comment was added")
+            
+            
+        except Exception:
+            user = request.form['user']
+            userBids = request.form['userBids']
+            
+            if user == '----':
+                user = None
+            if userBids == '----':
+                userBIds = None
+            
+            listings= getListingsByUser(user,
+            current_user.userid, current_user.userType)
+    
+            winningListings= getWinningListingsByUser(user,
+            current_user.userid, current_user.userType)
+           
+            return render_template('userPage.html',
+                user=users, listings=listings, myWon = myWon, mySold = mySold,
+                    winningListings=winningListings)
 
-        listings= getListingsByUser(user,
-        current_user.userid, current_user.userType)
 
-        winningListings= getWinningListingsByUser(user,
-        current_user.userid, current_user.userType)
-
-        return render_template('index.html',
-            user=users, listings=listings, winningListings=winningListings)
+    return render_template('userPage.html', user=users,
+        myWon = myWon, mySold = mySold)
 
 
-    return render_template('userPage.html', user=users)
+@app.route('/bid/item/<itemId>', methods=['GET', 'POST'])
+@login_required
+def bids(itemId):
+  
+    if request.method == 'POST':
+        newBid = request.form['newBid']
+        dbPlaceBid(current_user.userType,
+                itemId, current_user.userid, newBid)
+
+        flash("Your bid for " + newBid + " was successfull!")
+    
+    pastBids = dbBids(current_user.userType, current_user.userid,itemId)
+    
+    return render_template('bids.html', entries = pastBids)
 
 @app.route("/newListing", methods=['GET', 'POST'])
 @login_required
@@ -160,17 +199,9 @@ def newListing():
             if char == '/':
                 char = '-'
 
-        sqlCon = SQLConnection(current_user.userType)
-        con = sqlCon.connect()
-        cursor = con.cursor()
-
-        cursor.callproc('uspNewAuction', (current_user.userid, description,
-         category1, category2, listingEndDate,4000,))
-        sqlCon.close(con)
-
-        #dbNewListing(current_user.userType, current_user.userid,
-        #    description, category1, category2, listingEndDate,
-        #        startingPrice)
+        dbNewListing(current_user.userType, current_user.userid,
+            description, category1, category2, listingEndDate,
+                startingPrice)
         flash("Listing had been added!")
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)

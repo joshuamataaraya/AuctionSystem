@@ -18,14 +18,18 @@
   <thead>
     <tr>
       <th>Description</th>
+      <th>Starting Price</th>
       <th>Ending Price</th>
+      <th>Comment</th>
     </tr>
   </thead>
   <tbody>
     {% for item in listings %}
       <tr>
         <td>{{ (item['ItemDescription']) }}</td>
+        <td>{{ item['initialPrice'] }}</td>
         <td>{{ item['lastPrice'] }}</td>
+        <td>{{ item['comment'] }}</td>
       </tr>
     {% endfor %}
   </tbody>
@@ -48,14 +52,87 @@
   <thead>
     <tr>
       <th>Description</th>
+      <th>Starting Price</th>
       <th>Ending Price</th>
+      <th>Comment</th>
     </tr>
   </thead>
   <tbody>
     {% for item in wonBids %}
       <tr>
         <td>{{ (item['ItemDescription']) }}</td>
+        <td>{{ item['initialPrice'] }}</td>
         <td>{{ item['lastPrice'] }}</td>
+        <td>{{ item['comment'] }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<br>
+<h2>My Auctions</h2>
+<div class="container">
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Starting Price</th>
+      <th>Ending Price</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in myWon %}
+      <tr>
+        {% if not item['ERROR'] %}
+          <td> WON </td>
+          <td>{{ (item['ItemDescription']) }}</td>
+          <td>{{ item['initialPrice'] }}</td>
+          <td>{{ item['lastPrice'] }}</td>
+    
+          
+          <form method="post">
+           <td>
+            <input type="textarea" name="textComment" 
+            value="{{ item['comment'] }}">
+           </td>
+             <td>
+            <input type=hidden value="{{ item['id'] }}" name="idItem">
+            <button class="btn" type="submit">
+              Comment
+            </button>
+            </td>
+          </form>
+          
+        {% endif %}
+      </tr>
+    {% endfor %}
+    
+    {% for item in mySold %}
+      <tr>
+        {% if not item['ERROR'] %}
+          <td>SOLD</td>
+          <td>{{ (item['ItemDescription']) }}</td>
+          <td>{{ item['initialPrice'] }}</td>
+          <td>{{ item['lastPrice'] }}</td>
+   
+          
+          <form method="post">
+           <td>
+            <input type="textarea" name="textComment" 
+            value="{{ item['comment'] }}">
+           </td>
+             <td>
+            <input type=hidden value="{{ item['id'] }}" name="idItem">
+            <button class="btn" type="submit">
+              Comment
+            </button>
+            </td>
+          </form>
+          
+        {% endif %}
       </tr>
     {% endfor %}
   </tbody>

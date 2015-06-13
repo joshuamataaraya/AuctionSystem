@@ -26,6 +26,29 @@ def checkLogin(alias, password):
     sqlCon.close(con)
     return result
 
+def dbBids(userType, alias, itemId):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+
+    cursor.callproc('uspViewBidsForAnAuction', (itemId,alias,))
+    
+    pastBids = []
+    for row in cursor:
+        pastBids.append(row)  
+    checkError(cursor)      
+    sqlCon.close(con)
+    return pastBids
+
+def dbComment(userType, alias, comment, auctionId):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+    cursor.callproc('uspNewComment', (alias,comment,
+            auctionId,))
+    checkError(cursor)
+    sqlCon.close(con)
+
 def dbNewListing(userType, alias,
     description, category, subCategory, listingEndDate, startingPrice):
     sqlCon = SQLConnection(userType)
@@ -33,7 +56,7 @@ def dbNewListing(userType, alias,
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspNewAuction', (alias, description, category,
-        subCategory, listingEndDate,int(startingPrice),))
+        subCategory, listingEndDate,startingPrice,))
     con.commit()
     checkError(cursor)
     sqlCon.close(con)
@@ -73,7 +96,7 @@ def getListingsByUser(user, userId, userType):
     cursor.callproc('uspViewSellerHistory', (user, userId,))
 
     for row in cursor:
-        listings.append(row['Alias'])
+        listings.append(row)
     checkError(cursor)
     sqlCon.close(con)
     return listings
@@ -90,7 +113,7 @@ def getWinningListingsByUser(user, userId, userType):
     #get all listings
     cursor.callproc('uspViewWonAuctionHistory', (user,userId,))
     for row in cursor:
-        listings.append(row['Alias'])
+        listings.append(row)
     checkError(cursor)
     sqlCon.close(con)
     return listings
