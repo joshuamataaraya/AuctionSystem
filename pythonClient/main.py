@@ -111,32 +111,30 @@ def userPage():
     current_user.userid, current_user.userType)
 
     if request.method == 'POST':
-        try: #if user selected comment button
-            auction = request.values.get('idItem')
-            comment = request.values.get('textComment')
+       
+        auction = request.values.get('idItem')
+        comment = request.values.get('textComment')
             
-            print auction
-            
+        if comment != None:
             #add the comment
             dbComment(current_user.userType, current_user.userid,
                 comment, auction)
             flash("Your comment was added")
-            
-            
-        except Exception:
+              
+        else:
             user = request.form['user']
-            userBids = request.form['userBids']
+            winningBids = request.form['winningBids']
             
-            if user == '----':
-                user = None
-            if userBids == '----':
-                userBIds = None
-            
-            listings= getListingsByUser(user,
+            listings = []
+            winningListings = []
+
+            if user != '----':
+                listings= getListingsByUser(user,
             current_user.userid, current_user.userType)
-    
-            winningListings= getWinningListingsByUser(user,
+            if winningBids != '----':
+                winningListings= getWinningListingsByUser(winningBids,
             current_user.userid, current_user.userType)
+           
            
             return render_template('userPage.html',
                 user=users, listings=listings, myWon = myWon, mySold = mySold,

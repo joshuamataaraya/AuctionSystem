@@ -10,7 +10,7 @@
       {% endfor %}
     </select>
   <button class="btn btn-secondary" type="submit">Show Listings</button>
-
+<form>
 
 
 <div class="container">
@@ -37,16 +37,18 @@
 </div>
 
 
-
+<form method ="post">
     <label><h3>See a user's winningBids</h3></label>
-    <select class="form-control" name="userBids">
+    <select class="form-control" name="winningBids">
       <option>----</option>
-      {% for category in winningListings %}
+      {% for category in user %}
         <option>{{ category }}</option>
       {% endfor %}
     </select>
   <button class="btn btn-secondary" type="submit">Show Listings</button>
 </form>
+
+
 <div class="container">
 <table class="table table-hover table-striped">
   <thead>
@@ -58,7 +60,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for item in wonBids %}
+    {% for item in winningListings %}
       <tr>
         <td>{{ (item['ItemDescription']) }}</td>
         <td>{{ item['initialPrice'] }}</td>
@@ -95,8 +97,8 @@
           
           <form method="post">
            <td>
-            <input type="textarea" name="textComment" 
-            value="{{ item['comment'] }}">
+            <input type="text" name="textComment" 
+            value="">
            </td>
              <td>
             <input type=hidden value="{{ item['id'] }}" name="idItem">
@@ -121,8 +123,8 @@
           
           <form method="post">
            <td>
-            <input type="textarea" name="textComment" 
-            value="{{ item['comment'] }}">
+            <input type="text" name="textComment" 
+            value="">
            </td>
              <td>
             <input type=hidden value="{{ item['id'] }}" name="idItem">
