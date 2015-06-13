@@ -287,29 +287,25 @@ def SetUp():
 @app.route("/addCard", methods=['GET', 'POST'])
 @login_required
 def addCard():
-    # if request.method == 'POST':
-        # name = request.form['participantFirstName']
-        # lastName = request.form['participantLastName']
-        # alias = request.form['participantAlias']
-        # password = request.form['participantPassword']
-        # personalId=request.form['participantId']
-        # address=request.form['participantAddress']
-        # email=request.form['participantEmail']
-        # telCel=request.form['telCel']
-        # telWork=request.form['telWork']
-        # telHome=request.form['telHome']
-        # telOther=request.form['telOther']
-        # phones=[telCel,telWork,telHome,telOther]
-
-        # #add new Agent
-        # dbNewParticipant(current_user.userType,
-        #     name, lastName, alias, password,address,personalId,email)
+    participants = dbGetParticipants(current_user.userType,2)
+    if request.method == 'POST':
+        participant = request.form['participantSelect']
+        cardNumber = request.form['cardNumber']
+        securityCode = request.form['securityCode']
+        cardName = request.form['cardName']
+        expirationDate = request.form['expirationDate']
+         #add new Agent
+        for char in expirationDate :
+            if char == '/':
+                char = '-'
+        dbAddCard(current_user.userType,
+            participant, cardNumber, securityCode, cardName, expirationDate)
 
         # dbAddPhones(current_user.userType,alias,phones)
 
-        # flash("Participant Successfully added to DB!")
+        flash("Participant Successfully added to DB!")
 
-    return render_template('addCard.html')
+    return render_template('addCard.html',participants=participants)
 @app.route("/newParticipant", methods=['GET', 'POST'])
 @login_required
 def newParticipant():
