@@ -111,6 +111,17 @@ def dbNewAgent(userType,name, lastName, alias,
 
     con.commit()
     sqlCon.close(con)
+    
+def dbAddCard(userType,alias, cardNumber, securityCode,
+    cardName, expirationDate):
+    sqlCon = SQLConnection(userType)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+
+    cursor.callproc('uspAddCard', (alias,securityCode,
+        cardNumber, cardName,expirationDate,))
+    con.commit()
+    sqlCon.close(con)
 
 def dbAddPhones(userType,alias,phones):
     sqlCon = SQLConnection(userType)
