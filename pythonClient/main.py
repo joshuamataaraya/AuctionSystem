@@ -110,6 +110,9 @@ def userPage():
     myWon = getWinningListingsByUser(current_user.userid,
     current_user.userid, current_user.userType)
 
+    myFailed = getFailedAuctionsByUser(current_user.userType,
+    current_user.userid)
+
     if request.method == 'POST':
 
         auction = request.values.get('idItem')
@@ -140,11 +143,11 @@ def userPage():
 
             return render_template('userPage.html',
                 user=users, listings=listings, myWon = myWon, mySold = mySold,
-                    winningListings=winningListings)
+                    winningListings=winningListings, myFailed = myFailed)
 
 
     return render_template('userPage.html', user=users,
-        myWon = myWon, mySold = mySold)
+        myWon = myWon, mySold = mySold, myFailed = myFailed)
 
 
 @app.route('/bid/item/<itemId>', methods=['GET', 'POST'])
@@ -211,6 +214,26 @@ def newListing():
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)
 
+@app.route("/rePublishListing/<listing>", methods=['GET', 'POST'])
+@login_required
+def rePublishListing(listing):
+
+    if request.method == 'POST':
+        description = request.form['description']
+        listingEndDate = request.form['listingEndDate']
+        listingEndTime = request.form['listingEndTime']
+        startingPrice = request.form['startingPrice']
+
+        listingEndDate = fixDate(listingEndDate, listingEndTime)
+
+        try:
+            dbRePublishListing(current_user.userType, current_user.userid, listing, description, listingEndDate, startingPrice)
+        except Exception as e:
+            print e
+            flash(errorMsj)
+
+
+    return render_template('rePublishListing.html', listingId = listing)
 
 
 #Admin stuff    ***

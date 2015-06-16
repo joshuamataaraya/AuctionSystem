@@ -72,6 +72,18 @@ def dbNewListing(userType, alias,
     con.commit()
     sqlCon.close(con)
 
+def dbRePublishListing(userType, alias, auctionId,
+    description, listingEndDate, startingPrice):
+    sqlCon = SQLConnection(userType, alias)
+    con = sqlCon.connect()
+    cursor = con.cursor(as_dict=True)
+
+    cursor.callproc('uspRestartAuction', (alias,auctionId, description,     listingEndDate,startingPrice,))
+    checkError(cursor,"Listing had been added!")
+    con.commit()
+    sqlCon.close(con)
+
+
 
 def getUserType(alias):
     sqlCon = SQLConnection()
@@ -93,6 +105,22 @@ def getUserType(alias):
             sqlCon.close(con)
             return 'participant'
 
+
+def getFailedAuctionsByUser(userType, userId):
+    listings = []
+
+    if userType == 'participant':
+        sqlCon = SQLConnection(userType, userId)
+        con = sqlCon.connect()
+        cursor = con.cursor(as_dict=True)
+        #get all listings
+        cursor.callproc('uspViewFailedAuctions', (userId,))
+
+        for row in cursor:
+            listings.append(row)
+        checkError(cursor,"")
+        sqlCon.close(con)
+    return listings
 
 def getListingsByUser(user, userId, userType):
     if user == "----":
