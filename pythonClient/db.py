@@ -62,7 +62,7 @@ def dbComment(userType, alias, comment, auctionId):
     sqlCon.close(con)
 
 def dbNewListing(userType, alias,
-    description, category, subCategory, listingEndDate, startingPrice):
+    description, category, subCategory, listingEndDate, startingPrice, image):
     sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
