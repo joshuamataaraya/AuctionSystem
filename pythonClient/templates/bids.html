@@ -2,9 +2,9 @@
 	<form method="post" class="form-inline">
 		<div class="form-group">
 		<label for="comment"> Place a Bid</label>
-		<input name="newBid" class="form-control" type="number"> 
+		<input name="newBid" class="form-control" type="number">
 		</div>
-	
+
 		<button class="btn btn-primary" type="submit">Place Bid</button>
   </form>
   <br><br>
@@ -14,7 +14,8 @@
 	    <thead>
 	      <tr>
 	        <th>Alias Bidder</th>
-			<th>Bidder Active?</th>
+			<th>Bidder Suspended?</th>
+					<th>Listing Active?</th>
 	        <th>Amount</th>
 	        <th>When</th>
 	      </tr>
@@ -24,6 +25,7 @@
 	        <tr>
 	          <td>{{ (item['AliasPujador']) }}</td>
 			  <td>{{ (item['EstaSuspendida']) }}</td>
+				<td>{{	item['EstaActiva']}}</td>
 			  <td>{{ (item['Monto']) }}</td>
 			  <td>{{ (item['Momento']) }}</td>
 	        </tr>
@@ -31,5 +33,5 @@
 	    </tbody>
 	  </table>
 	</div>
-	
+
 {% endblock %}
