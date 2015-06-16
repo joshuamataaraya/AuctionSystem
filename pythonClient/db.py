@@ -57,11 +57,12 @@ def dbComment(userType, alias, comment, auctionId):
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspNewComment', (alias,comment,
             auctionId,))
+    con.commit()
     checkError(cursor,"Your comment was added")
     sqlCon.close(con)
 
 def dbNewListing(userType, alias,
-    description, category, subCategory, listingEndDate, startingPrice, image):
+    description, category, subCategory, listingEndDate, startingPrice):
     sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)

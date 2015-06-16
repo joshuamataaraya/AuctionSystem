@@ -29,11 +29,21 @@ def index():
     cate1 = []
     cate2 = []
 
+    # for row in cursor:
+    #     for cat in cate1:
+    #         if cat[0] != row['category']:
+    #             cate2.append([row['category']])
+    #         if (row['subCategory']) not in cat:
+    #             cat.append(row['subCategory'])
+    #
+    # print cate1
+
     for row in cursor:
         if (row['category']) not in cate1:
             cate1.append(row['category'])
         if (row['subCategory']) not in cate2:
             cate2.append(row['subCategory'])
+
 
     #close connection
     sqlCon.close(con)
@@ -115,8 +125,8 @@ def userPage():
 
     if request.method == 'POST':
 
-        auction = request.values.get('idItem')
-        comment = request.values.get('textComment')
+        auction = request.form['idItem']
+        comment = request.form['textComment']
 
         if comment != None:
             #add the comment

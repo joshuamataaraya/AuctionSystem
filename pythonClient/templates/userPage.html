@@ -83,7 +83,8 @@
       <th>Description</th>
       <th>Starting Price</th>
       <th>Ending Price</th>
-      <th>Comment</th>
+      <th>CommentFromOther</th>
+      <th>AddComment</th>
     </tr>
   </thead>
   <tbody>
@@ -94,15 +95,14 @@
           <td>{{ (item['ItemDescription']) }}</td>
           <td>{{ item['initialPrice'] }}</td>
           <td>{{ item['lastPrice'] }}</td>
-
+          <td>{{ item['comment'] }}</td>
 
           <form method="post">
            <td>
-            <input type="text" name="textComment"
-            value="">
+            <input type="text" name="textComment">
            </td>
              <td>
-            <input type=hidden value="{{ item['id'] }}" name="idItem">
+            <input hidden value="{{ item['id'] }}" name="idItem">
             <button class="btn" type="submit">
               Comment
             </button>
@@ -120,15 +120,14 @@
           <td>{{ (item['ItemDescription']) }}</td>
           <td>{{ item['initialPrice'] }}</td>
           <td>{{ item['lastPrice'] }}</td>
-
+          <td>{{ item['comment'] }}</td>
 
           <form method="post">
            <td>
-            <input type="text" name="textComment"
-            value="">
+            <input type="text" name="textComment">
            </td>
              <td>
-            <input type=hidden value="{{ item['id'] }}" name="idItem">
+            <input hidden value="{{ item['id'] }}" name="idItem">
             <button class="btn" type="submit">
               Comment
             </button>
@@ -146,7 +145,7 @@
         <td>FAILED</td>
         <td>{{ (item['ItemDescription']) }}</td>
         <td>{{ item['PrecioInicial'] }}</td>
-        <td></td><td></td>
+        <td></td><td></td><td></td>
         <td>
           <form
             action="{{ url_for('rePublishListing', listing= item['id']) }}">
