@@ -20,7 +20,7 @@ loginManager = LoginManager()
 @login_required
 def index():
 
-    sqlCon = SQLConnection(current_user.userType)
+    sqlCon = SQLConnection(current_user.userType, current_user.userid)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
@@ -45,8 +45,8 @@ def index():
         try: #if user selected newBid button
             item = request.values.get('idItem')
             #show them all past bids and let them bid
-            return redirect(url_for('bids', itemId=item))  
-        except:
+            return redirect(url_for('bids', itemId=item))
+        except Exception as e:
             category1 = request.form['category1']
             category2 = request.form['category2']
 
@@ -55,7 +55,7 @@ def index():
             if category2 == "----":
                 category2 = None
 
-            sqlCon = SQLConnection(current_user.userType)
+            sqlCon = SQLConnection(current_user.userType, current_user.userid)
             con = sqlCon.connect()
             cursor = con.cursor(as_dict=True)
             #get all listings
@@ -80,7 +80,7 @@ def login():
         alias = request.form['alias'].encode("UTF-8")
         password = request.form['password'].encode("UTF-8")
 
-        user = User(alias, getUserType(alias))
+        user = User(alias, getUserType(alias), password)
 
         if checkLogin(alias, password):    #if valid user
             login_user(user) #login the user
@@ -101,29 +101,32 @@ def logout():
 @app.route("/userPage", methods=['GET', 'POST'])
 @login_required
 def userPage():
-    users = dbGetParticipants(current_user.userType, 0)
-    
+    users = dbGetParticipants(current_user.userType,
+    current_user.userid, 0)
+
     mySold = getListingsByUser(current_user.userid,
-            current_user.userid, current_user.userType)
+    current_user.userid, current_user.userType)
+
     myWon = getWinningListingsByUser(current_user.userid,
     current_user.userid, current_user.userType)
 
     if request.method == 'POST':
-       
+
         auction = request.values.get('idItem')
         comment = request.values.get('textComment')
-            
+
         if comment != None:
             #add the comment
             try:
                 dbComment(current_user.userType, current_user.userid,
                     comment, auction)
-            except:
+            except Exception as e:
+                print e
                 flash(errorMsj)
         else:
             user = request.form['user']
             winningBids = request.form['winningBids']
-            
+
             listings = []
             winningListings = []
 
@@ -133,8 +136,8 @@ def userPage():
             if winningBids != '----':
                 winningListings= getWinningListingsByUser(winningBids,
             current_user.userid, current_user.userType)
-           
-           
+
+
             return render_template('userPage.html',
                 user=users, listings=listings, myWon = myWon, mySold = mySold,
                     winningListings=winningListings)
@@ -147,23 +150,24 @@ def userPage():
 @app.route('/bid/item/<itemId>', methods=['GET', 'POST'])
 @login_required
 def bids(itemId):
-  
+
     if request.method == 'POST':
         newBid = request.form['newBid']
         try:
             dbPlaceBid(current_user.userType,
                 itemId, current_user.userid, newBid)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
-    
+
     pastBids = dbBids(current_user.userType, current_user.userid,itemId)
-    
+
     return render_template('bids.html', entries = pastBids)
 
 @app.route("/newListing", methods=['GET', 'POST'])
 @login_required
 def newListing():
-    sqlCon = SQLConnection(current_user.userType)
+    sqlCon = SQLConnection(current_user.userType, current_user.userid)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
@@ -192,15 +196,17 @@ def newListing():
         listingEndTime = request.form['listingEndTime']
         startingPrice = request.form['startingPrice']
 
-        listingEndDate += "T"+ listingEndTime
-        for char in listingEndDate:
-            if char == '/':
-                char = '-'
+        listingEndDate = fixDate(listingEndDate, listingEndTime)
+
+        print listingEndDate
+
         try:
+
             dbNewListing(current_user.userType, current_user.userid,
                 description, category1, category2, listingEndDate,
                 startingPrice)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('newListing.html', cate1=cate1, cate2=cate2)
@@ -225,11 +231,12 @@ def newAdmin():
         phones=[telCel,telWork,telHome,telOther]
         #add new Agent
         try:
-            dbNewAdmin(current_user.userType,
+            dbNewAdmin(current_user.userType, current_user.userid,
                 name, lastName, alias, password,
                 address,personalId)
-            dbAddPhones(current_user.userType,alias,phones)
-        except:
+            dbAddPhones(current_user.userType, current_user.userid, alias,phones)
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('newAdministrator.html')
@@ -250,11 +257,13 @@ def newAgent():
         phones=[telCel,telWork,telHome,telOther]
         #add new Agent
         try:
-            dbNewAgent(current_user.userType,
+            dbNewAgent(current_user.userType,current_user.userid,
                 name, lastName, alias, password,
                 address,personalId)
-            dbAddPhones(current_user.userType,alias,phones)
-        except:
+            dbAddPhones(current_user.userType,current_user.userid,
+        alias,phones)
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('newAgent.html')
@@ -263,7 +272,7 @@ def newAgent():
 @login_required
 def modifyAgent():
 
-    agents = dbGetAgents(current_user.userType,2)
+    agents = dbGetAgents(current_user.userType,current_user.userid,2)
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
@@ -273,7 +282,8 @@ def modifyAgent():
 
         try:
             dbModifyAgent(current_user.userType, alias, name, lastName,address)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('modifyAgent.html', agents=agents)
@@ -281,13 +291,14 @@ def modifyAgent():
 @app.route("/reactivateAgent", methods=['GET', 'POST'])
 @login_required
 def reactivateAgent():
-    agents = dbGetAgents(current_user.userType,1)
+    agents = dbGetAgents(current_user.userType,current_user.userid,1)
 
     if request.method == 'POST':
         alias = request.form['agentSelect']
         try:
-            dbActivateAgent(current_user.userType, alias)
-        except:
+            dbActivateAgent(current_user.userType,current_user.userid, alias)
+        except Exception as e:
+            print e
             flash(errorMsj)
     if len(agents)==0:
             flash("we dont have Suspended Agents")
@@ -297,12 +308,13 @@ def reactivateAgent():
 @app.route("/suspendAgent", methods=['GET', 'POST'])
 @login_required
 def suspendAgent():
-    agents = dbGetAgents(current_user.userType,0)
+    agents = dbGetAgents(current_user.userType,current_user.userid,0)
     if request.method == 'POST':
         alias = request.form['agentSelect']
         try:
-            dbSuspendAgent(current_user.userType, alias)
-        except:
+            dbSuspendAgent(current_user.userType,current_user.userid, alias)
+        except Exception as e:
+            print e
             flash(errorMsj)
     if len(agents)==0:
         flash("We dont have Activated Agents")
@@ -315,9 +327,10 @@ def SetUp():
         minimumIncrease = request.form['minimumIncrease']
         #add new Agent
         try:
-            dbSetUpSystem(current_user.userType,
+            dbSetUpSystem(current_user.userType, current_user.userid,
                 commission,minimumIncrease)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('setUp.html')
@@ -327,7 +340,7 @@ def SetUp():
 @app.route("/addCard", methods=['GET', 'POST'])
 @login_required
 def addCard():
-    participants = dbGetParticipants(current_user.userType,2)
+    participants = dbGetParticipants(current_user.userType,current_user.userid,2)
     if request.method == 'POST':
         participant = request.form['participantSelect']
         cardNumber = request.form['cardNumber']
@@ -339,9 +352,10 @@ def addCard():
             if char == '/':
                 char = '-'
         try:
-            dbAddCard(current_user.userType,
+            dbAddCard(current_user.userType, current_user.userid,
                 participant, cardNumber, securityCode, cardName, expirationDate)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('addCard.html',participants=participants)
@@ -364,11 +378,12 @@ def newParticipant():
 
         #add new Agent
         try:
-            dbNewParticipant(current_user.userType,
+            dbNewParticipant(current_user.userType,current_user.userid,
                 name, lastName, alias, password,address,personalId,email)
 
-            dbAddPhones(current_user.userType,alias,phones)
-        except:
+            dbAddPhones(current_user.userType,current_user.userid,alias,phones)
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('newParticipant.html')
@@ -377,7 +392,8 @@ def newParticipant():
 @login_required
 def modifyParticipant():
 
-    agents = dbGetParticipants(current_user.userType,2)
+    agents = dbGetParticipants(current_user.userType,current_user.userid,
+    2)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
@@ -385,9 +401,19 @@ def modifyParticipant():
         lastName = request.form['participantLastName']
         email=request.form['participantEmail']
         address=request.form['participantAddress']
+
+        telCel=request.form['telCel']
+        telWork=request.form['telWork']
+        telHome=request.form['telHome']
+        telOther=request.form['telOther']
+        phones=[telCel,telWork,telHome,telOther]
+
         try:
-            dbModifyParticipant(current_user.userType, alias, name, lastName,email,address)
-        except:
+            dbModifyParticipant(current_user.userType,current_user.userid, alias, name, lastName,email,address)
+
+            dbAddPhones(current_user.userType,current_user.userid,alias,phones)
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     return render_template('modifyParticipant.html', agents=agents)
@@ -401,7 +427,8 @@ def reactivateParticipant():
         alias = request.form['participantSelect']
         try:
             dbActivateParticipant(current_user.userType, alias)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
     if len(agents)==0:
         flash("We dont have Suspended Participants")
@@ -416,7 +443,8 @@ def suspendParticipant():
         alias = request.form['participantSelect']
         try:
             dbSuspendParticipant(current_user.userType, alias)
-        except:
+        except Exception as e:
+            print e
             flash(errorMsj)
 
     if len(agents)==0:

@@ -2,6 +2,17 @@ from sql import SQLConnection
 import pymssql
 from flask import flash
 
+def fixDate(date, time):
+    date += "T"+ time
+    charCount = 0
+    for char in date:
+        if char == '/':
+            char = '-'
+        charCount += 1
+    if charCount <  18:
+        date += ":00"
+    return date
+
 def dbPlaceBid(userType, itemId, alias, newBid):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
@@ -27,21 +38,21 @@ def checkLogin(alias, password):
     return result
 
 def dbBids(userType, alias, itemId):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspViewBidsForAnAuction', (itemId,alias,))
-    
+
     pastBids = []
     for row in cursor:
-        pastBids.append(row)  
-    checkError(cursor,"")      
+        pastBids.append(row)
+    checkError(cursor,"")
     sqlCon.close(con)
     return pastBids
 
 def dbComment(userType, alias, comment, auctionId):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspNewComment', (alias,comment,
@@ -51,7 +62,7 @@ def dbComment(userType, alias, comment, auctionId):
 
 def dbNewListing(userType, alias,
     description, category, subCategory, listingEndDate, startingPrice):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
@@ -89,7 +100,7 @@ def getListingsByUser(user, userId, userType):
 
     listings = []
 
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     #get all listings
@@ -107,7 +118,7 @@ def getWinningListingsByUser(user, userId, userType):
 
     listings = []
 
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     #get all listings
@@ -118,9 +129,9 @@ def getWinningListingsByUser(user, userId, userType):
     sqlCon.close(con)
     return listings
 
-def dbNewAdmin(userType,name, lastName, alias,
+def dbNewAdmin(userType,userId,name, lastName, alias,
     password,address,personalId):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAddNewAdmin', (alias,password, name, lastName,address,personalId,))
@@ -128,9 +139,9 @@ def dbNewAdmin(userType,name, lastName, alias,
     con.commit()
     sqlCon.close(con)
 
-def dbNewAgent(userType,name, lastName, alias,
+def dbNewAgent(userType, userId,name, lastName, alias,
     password,address,personalId):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
@@ -140,9 +151,9 @@ def dbNewAgent(userType,name, lastName, alias,
     con.commit()
     sqlCon.close(con)
 
-def dbAddCard(userType,alias, cardNumber, securityCode,
+def dbAddCard(userType,userId,alias, cardNumber, securityCode,
     cardName, expirationDate):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
@@ -152,8 +163,8 @@ def dbAddCard(userType,alias, cardNumber, securityCode,
     con.commit()
     sqlCon.close(con)
 
-def dbAddPhones(userType,alias,phones):
-    sqlCon = SQLConnection(userType)
+def dbAddPhones(userType,userId,alias,phones):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     for phone in phones:
@@ -166,8 +177,8 @@ def dbAddPhones(userType,alias,phones):
     con.commit()
     sqlCon.close(con)
 
-def dbModifyAgent(userType, alias, name, lastName,address):
-    sqlCon = SQLConnection(userType)
+def dbModifyAgent(userType, userId, alias, name, lastName,address):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyAgentData', (alias, name, lastName,address,))
@@ -175,8 +186,8 @@ def dbModifyAgent(userType, alias, name, lastName,address):
     con.commit()
     sqlCon.close(con)
 
-def dbSetUpSystem(userType,commission,minimumIncrease):
-    sqlCon = SQLConnection(userType)
+def dbSetUpSystem(userType,userId,commission,minimumIncrease):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSetSystemParameters', (commission,minimumIncrease,))
@@ -184,8 +195,8 @@ def dbSetUpSystem(userType,commission,minimumIncrease):
     con.commit()
     sqlCon.close(con)
 
-def dbSuspendAgent(userType, alias):
-    sqlCon = SQLConnection(userType)
+def dbSuspendAgent(userType,userId,  alias):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSuspendAgent', (alias,))
@@ -193,8 +204,8 @@ def dbSuspendAgent(userType, alias):
     con.commit()
     sqlCon.close(con)
 
-def dbActivateAgent(userType, alias):
-    sqlCon = SQLConnection(userType)
+def dbActivateAgent(userType, userId, alias):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAllowAgent', (alias,))
@@ -203,8 +214,8 @@ def dbActivateAgent(userType, alias):
     sqlCon.close(con)
 
 
-def dbActivateParticipant(userType, alias):
-    sqlCon = SQLConnection(userType)
+def dbActivateParticipant(userType, userId, alias):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspAllowParticipant', (alias,))
@@ -212,8 +223,8 @@ def dbActivateParticipant(userType, alias):
     con.commit()
     sqlCon.close(con)
 
-def dbSuspendParticipant(userType, alias):
-    sqlCon = SQLConnection(userType)
+def dbSuspendParticipant(userType, userId, alias):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspSuspendParticipant', (alias,))
@@ -222,8 +233,8 @@ def dbSuspendParticipant(userType, alias):
     sqlCon.close(con)
 
 
-def dbGetAgents(userType,JustSuspended):
-    sqlCon = SQLConnection(userType)
+def dbGetAgents(userType,userId, JustSuspended):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
@@ -242,8 +253,10 @@ def dbGetAgents(userType,JustSuspended):
     sqlCon.close(con)
     return agents
 
-def dbGetParticipants(userType,JustSuspended):
-    sqlCon = SQLConnection(userType)
+def dbGetParticipants(userType, userid,JustSuspended):
+    print 'user is type =' + userType
+    print 'Hola = '+ userid
+    sqlCon = SQLConnection(userType, userid)
     con = sqlCon.connect()
 
     cursor = con.cursor(as_dict=True)
@@ -264,9 +277,9 @@ def dbGetParticipants(userType,JustSuspended):
     sqlCon.close(con)
     return participants
 
-def dbNewParticipant(userType,name, lastName, alias,
+def dbNewParticipant(userType,userId,name, lastName, alias,
     password,address,personalId,email):
-    sqlCon = SQLConnection(userType)
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspNewParticipant', (alias,password, name, lastName,address,personalId,email,))
@@ -274,8 +287,8 @@ def dbNewParticipant(userType,name, lastName, alias,
     con.commit()
     sqlCon.close(con)
 
-def dbModifyParticipant(userType, alias, name, lastName,email,address):
-    sqlCon = SQLConnection(userType)
+def dbModifyParticipant(userType, userId,alias, name, lastName,email,address):
+    sqlCon = SQLConnection(userType, userId)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
     cursor.callproc('uspModifyParticipantData', (alias, name, lastName,address,email,))

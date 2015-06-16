@@ -1,17 +1,19 @@
 import pymssql
 
+from user import getPassword
+
 class SQLConnection:
 
     """Connecto to Microsoft SQL DB """
-    def __init__(self, userType=None):
+    def __init__(self, userType=None, userName=None):
         self.server = "autionDB"
 
         if userType == "admin":
-            self.user = "Admin"
-            self.password = "Admin"
+            self.user = userName
+            self.password = getPassword(userName)
         elif userType == "agent":
-            self.user = "Agent1"
-            self.password = "FirstAgent"
+            self.user = userName
+            self.password = getPassword(userName)
         elif userType == "participant":
             self.user = "Participant"
             self.password = "AppParticipant"
