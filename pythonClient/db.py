@@ -16,7 +16,7 @@ def fixDate(date, time):
 def dbPlaceBid(userType, itemId, alias, newBid):
     sqlCon = SQLConnection(userType)
     con = sqlCon.connect()
-    cursor = con.cursor()
+    cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspNewBid', (itemId, alias,newBid,))
     checkError(cursor,"Your bid for " + newBid + " was successfull!")

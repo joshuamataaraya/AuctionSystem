@@ -437,12 +437,12 @@ def reactivateParticipant():
 @app.route("/suspendParticipant", methods=['GET', 'POST'])
 @login_required
 def suspendParticipant():
-    agents = dbGetParticipants(current_user.userType,0)
+    agents = dbGetParticipants(current_user.userType,current_user.userid,0)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
         try:
-            dbSuspendParticipant(current_user.userType, alias)
+            dbSuspendParticipant(current_user.userType,current_user.userid,alias)
         except Exception as e:
             print e
             flash(errorMsj)
