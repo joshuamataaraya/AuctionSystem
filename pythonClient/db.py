@@ -61,13 +61,13 @@ def dbComment(userType, alias, comment, auctionId):
     sqlCon.close(con)
 
 def dbNewListing(userType, alias,
-    description, category, subCategory, listingEndDate, startingPrice):
+    description, category, subCategory, listingEndDate, startingPrice, image):
     sqlCon = SQLConnection(userType, alias)
     con = sqlCon.connect()
     cursor = con.cursor(as_dict=True)
 
     cursor.callproc('uspNewAuction', (alias, description, category,
-        subCategory, listingEndDate,startingPrice,))
+        subCategory, listingEndDate,startingPrice,image,))
     checkError(cursor,"Listing had been added!")
     con.commit()
     sqlCon.close(con)
@@ -199,7 +199,7 @@ def dbAddPhones(userType,userId,alias,phones):
         if phone!="":
             cursor.callproc('uspAddPhoneNumber', (alias,phone,))
     if len(phones)!=0:
-        checkError(cursor,"Phones well added to the DB!")
+        checkError(cursor,"Phones were added to the DB!")
     else:
         checkError(cursor,"")
     con.commit()

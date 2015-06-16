@@ -198,6 +198,7 @@ def newListing():
         listingEndDate = request.form['listingEndDate']
         listingEndTime = request.form['listingEndTime']
         startingPrice = request.form['startingPrice']
+        image = request.form['img']
 
         listingEndDate = fixDate(listingEndDate, listingEndTime)
 
@@ -207,7 +208,7 @@ def newListing():
 
             dbNewListing(current_user.userType, current_user.userid,
                 description, category1, category2, listingEndDate,
-                startingPrice)
+                startingPrice, image)
         except Exception as e:
             print e
             flash(errorMsj)
@@ -444,12 +445,12 @@ def modifyParticipant():
 @app.route("/reactivateParticipant", methods=['GET', 'POST'])
 @login_required
 def reactivateParticipant():
-    agents = dbGetParticipants(current_user.userType,1)
+    agents = dbGetParticipants(current_user.userType, current_user.userid,1)
 
     if request.method == 'POST':
         alias = request.form['participantSelect']
         try:
-            dbActivateParticipant(current_user.userType, alias)
+            dbActivateParticipant(current_user.userType, current_user.userid, alias)
         except Exception as e:
             print e
             flash(errorMsj)
